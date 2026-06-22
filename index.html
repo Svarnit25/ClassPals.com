@@ -3,69 +3,76 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>ClassPal | Safe Social Space for Kids</title>
+    <title>ClassPal - Kids Safe Zone</title>
     <style>
         * {
+            box-sizing: border-box;
             margin: 0;
             padding: 0;
-            box-sizing: border-box;
             font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
         }
 
         body {
-            background-color: #f0f4f8;
-            color: #333;
             display: flex;
             height: 100vh;
+            background-color: #f0f4f8;
+            color: #333;
             overflow: hidden;
         }
 
-        /* Sidebar Navigation */
+        /* Sidebar Styling */
         .sidebar {
             width: 260px;
-            background-color: #4a6fa5;
+            background-color: #3b71ca;
             color: white;
-            padding: 20px;
             display: flex;
             flex-direction: column;
             justify-content: space-between;
+            padding: 20px;
         }
 
-        .logo h1 {
+        .logo {
             font-size: 24px;
             font-weight: bold;
             margin-bottom: 30px;
-            letter-spacing: 1px;
         }
 
-        .nav-links {
-            list-style: none;
-        }
-
-        .nav-links li {
+        .menu-item {
             padding: 12px 15px;
             margin-bottom: 8px;
             border-radius: 8px;
             cursor: pointer;
-            transition: background 0.3s;
+            transition: background 0.2s;
+            font-weight: 500;
         }
 
-        .nav-links li:hover, .nav-links li.active {
-            background-color: #3b5c88;
+        .menu-item:hover, .menu-item.active {
+            background-color: #2a5298;
         }
 
-        .credits {
+        .creators {
             font-size: 12px;
-            border-top: 1px solid #6b8ebe;
+            opacity: 0.8;
+            border-top: 1px solid rgba(255,255,255,0.2);
             padding-top: 15px;
-            line-height: 1.5;
         }
 
-        /* Main Content Area */
-        .main-content {
+        /* Main Content Container */
+        .main-container {
             flex: 1;
-            padding: 40px;
+            display: flex;
+            flex-direction: column;
             overflow-y: auto;
+        }
+
+        /* Dashboard Section */
+        .page-section {
+            padding: 30px;
+            display: none;
+        }
+
+        .page-section.active-page {
+            display: block;
         }
 
         .header {
@@ -75,8 +82,8 @@
             margin-bottom: 30px;
         }
 
-        .safety-badge {
-            background-color: #2ec4b6;
+        .badge {
+            background-color: #14a44d;
             color: white;
             padding: 8px 16px;
             border-radius: 20px;
@@ -84,12 +91,12 @@
             font-size: 14px;
         }
 
-        /* Features Grid */
+        /* Feature Cards Grid */
         .grid {
             display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
             gap: 20px;
-            margin-bottom: 40px;
+            margin-bottom: 30px;
         }
 
         .card {
@@ -100,107 +107,230 @@
         }
 
         .card h3 {
-            color: #4a6fa5;
             margin-bottom: 10px;
+            color: #2a5298;
         }
 
-        /* School Mode Dashboard Section */
-        .parent-control-box {
-            background: #ff9f1c;
-            color: white;
-            padding: 30px;
-            border-radius: 15px;
-            margin-top: 20px;
-        }
-
-        .strike-counter {
-            background: #e71d36;
-            color: white;
+        /* Banners */
+        .banner {
             padding: 20px;
             border-radius: 12px;
-            margin-top: 20px;
+            color: white;
+            margin-bottom: 20px;
         }
+
+        .school-mode { background-color: #e4a11b; }
+        .safety-strike { background-color: #dc4c64; }
 
         .btn {
             background: white;
-            color: #ff9f1c;
+            color: #e4a11b;
             border: none;
             padding: 10px 20px;
-            border-radius: 8px;
+            border-radius: 6px;
             font-weight: bold;
-            cursor: pointer;
             margin-top: 15px;
+            cursor: pointer;
         }
 
-        .btn-danger {
+        /* --- OPTION 1: CHAT PANEL STYLING --- */
+        .chat-container {
+            display: flex;
+            flex-direction: column;
+            height: calc(100vh - 40px);
             background: white;
-            color: #e71d36;
+            margin: 20px;
+            border-radius: 12px;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.05);
+            overflow: hidden;
         }
+
+        .chat-header {
+            background: #2a5298;
+            color: white;
+            padding: 15px 20px;
+            font-weight: bold;
+            font-size: 18px;
+        }
+
+        .chat-messages {
+            flex: 1;
+            padding: 20px;
+            overflow-y: auto;
+            display: flex;
+            flex-direction: column;
+            gap: 12px;
+            background: #f7f9fb;
+        }
+
+        .msg {
+            max-width: 70%;
+            padding: 10px 14px;
+            border-radius: 12px;
+            line-height: 1.4;
+        }
+
+        .msg.incoming {
+            background: #e2e8f0;
+            align-self: flex-start;
+            border-top-left-radius: 20px;
+        }
+
+        .msg.outgoing {
+            background: #3b71ca;
+            color: white;
+            align-self: flex-end;
+            border-top-right-radius: 20px;
+        }
+
+        .chat-input-area {
+            display: flex;
+            padding: 15px;
+            background: white;
+            border-top: 1px solid #e2e8f0;
+            gap: 10px;
+        }
+
+        .chat-input {
+            flex: 1;
+            padding: 12px;
+            border: 1px solid #cbd5e1;
+            border-radius: 8px;
+            outline: none;
+            font-size: 14px;
+        }
+
+        .send-btn {
+            background: #3b71ca;
+            color: white;
+            border: none;
+            padding: 0 20px;
+            border-radius: 8px;
+            cursor: pointer;
+            font-weight: bold;
+        }
+
+        .send-btn:hover { background: #2a5298; }
     </style>
 </head>
 <body>
 
-    <!-- Sidebar Navigation -->
+    <!-- Sidebar Layout -->
     <div class="sidebar">
         <div>
-            <div class="logo">
-                <h1>ClassPal.com</h1>
-            </div>
-            <ul class="nav-links">
-                <li class="active">Dashboard</li>
-                <li>My Servers</li>
-                <li>Clan Teams</li>
-                <li>Direct Messages</li>
-                <li>Add Friends (by ID)</li>
-                <li>Safety Log</li>
-            </ul>
+            <div class="logo">ClassPal.com</div>
+            <div class="menu-item active" onclick="switchPage('dashboard', this)">Dashboard</div>
+            <div class="menu-item" onclick="alert('My Servers feature coming soon!')">My Servers</div>
+            <div class="menu-item" onclick="alert('Clan Teams feature coming soon!')">Clan Teams</div>
+            <div class="menu-item" onclick="switchPage('direct-messages', this)">Direct Messages 💬</div>
+            <div class="menu-item" onclick="alert('Add Friends feature coming soon!')">Add Friends (by ID)</div>
+            <div class="menu-item" onclick="alert('Safety Log feature coming soon!')">Safety Log</div>
         </div>
+        <div class="creators">
+            <strong>Created & Made By:</strong><br>
+            Svarnit Gupta &<br>Yuvaan Singh Parihar
+        </div>
+    </div>
+
+    <!-- Main Screens Content -->
+    <div class="main-container">
         
-        <!-- Creator Credits Included Here -->
-        <div class="credits">
-            <p><strong>Created & Made By:</strong></p>
-            <p>Svarnit Gupta &<br>Yuvaan Singh Parhihar</p>
+        <!-- DASHBOARD PAGE -->
+        <div id="dashboard" class="page-section active-page">
+            <div class="header">
+                <h2>Welcome to ClassPal!</h2>
+                <div class="badge">🛡️ 100% Kids Safe Zone</div>
+            </div>
+
+            <div class="grid">
+                <div class="card">
+                    <h3>💬 Text & Voice Chat</h3>
+                    <p>Connect safely with friends in custom servers and quick direct messages designed just for kids.</p>
+                </div>
+                <div class="card">
+                    <h3>🛡️ Smart Filter</h3>
+                    <p>Our automated systems instantly block bad words and harmful links to keep the community clean.</p>
+                </div>
+                <div class="card">
+                    <h3>🎮 Clan Teams</h3>
+                    <p>Create your own squad, invite classmates using your unique IDs, and play together safely.</p>
+                </div>
+            </div>
+
+            <div class="banner school-mode">
+                <h3>🏫 School Mode (Under 9 Years Old)</h3>
+                <p>When turned on by parents, this completely locks and blocks all Chatting and VC functionalities, leaving only educational and safe group tracking open.</p>
+                <button class="btn">Configure School Mode</button>
+            </div>
+
+            <div class="banner safety-strike">
+                <h3>⚠️ Safety Strike System (3-Chance Policy)</h3>
+                <p>ClassPal has zero tolerance for bad links or harmful language. Every account has exactly 3 chances.</p>
+            </div>
         </div>
+
+        <!-- DIRECT MESSAGES PAGE (THE NEW CHAT PANEL!) -->
+        <div id="direct-messages" class="page-section" style="padding:0;">
+            <div class="chat-container">
+                <div class="chat-header">🌐 Global Kids Sandbox Chat</div>
+                <div class="chat-messages" id="chatBox">
+                    <div class="msg incoming"><strong>Yuvaan:</strong> Yo Svarnit! The layout looks clean! Did the hosting link work? 🤔</div>
+                    <div class="msg outgoing"><strong>You:</strong> Yes!! We successfully deleted the CNAME file and bypassed the Wix error! 🚀</div>
+                    <div class="msg incoming"><strong>Yuvaan:</strong> Awesome! Try typing a message in the input below to test the active panel grid.</div>
+                </div>
+                <div class="chat-input-area">
+                    <input type="text" id="messageInput" class="chat-input" placeholder="Type a message here to test the live filter..." onkeypress="handleKeyPress(event)">
+                    <button class="send-btn" onclick="sendMessage()">Send</button>
+                </div>
+            </div>
+        </div>
+
     </div>
 
-    <!-- Main Content Area -->
-    <div class="main-content">
-        <div class="header">
-            <h2>Welcome to ClassPal!</h2>
-            <div class="safety-badge">🛡️ 100% Kids Safe Zone</div>
-        </div>
+    <!-- Javascript Actions Configuration -->
+    <script>
+        // System to switch tabs cleanly
+        function switchPage(pageId, element) {
+            // Hide all pages
+            document.querySelectorAll('.page-section').forEach(page => {
+                page.classList.remove('active-page');
+            });
+            // Show selected page
+            document.getElementById(pageId).classList.add('active-page');
 
-        <!-- Features Grid -->
-        <div class="grid">
-            <div class="card">
-                <h3>💬 Text & Voice Chat</h3>
-                <p>Connect safely with friends in custom servers and quick direct messages designed just for kids.</p>
-            </div>
-            <div class="card">
-                <h3>🛡️ Smart Filter</h3>
-                <p>Our automated systems instantly block bad words and harmful links to keep the community clean.</p>
-            </div>
-            <div class="card">
-                <h3>🎮 Clan Teams</h3>
-                <p>Create your own squad, invite classmates using your unique IDs, and play together safely.</p>
-            </div>
-        </div>
+            // Toggle Active Sidebar Buttons
+            document.querySelectorAll('.menu-item').forEach(item => {
+                item.classList.remove('active');
+            });
+            element.classList.add('active');
+        }
 
-        <!-- School Mode Panel (Parent Controlled) -->
-        <div class="parent-control-box">
-            <h3>🏫 School Mode (Under 9 Years Old)</h3>
-            <p>When turned on by parents, this completely locks and blocks all Chatting and VC functionalities, leaving only educational and safe group tracking open.</p>
-            <button class="btn" onclick="alert('Parent Password Required to Toggle School Mode')">Configure School Mode</button>
-        </div>
+        // Live Chat Message System
+        function sendMessage() {
+            const input = document.getElementById('messageInput');
+            const chatBox = document.getElementById('chatBox');
+            
+            if (input.value.trim() !== "") {
+                // Create custom outgoing message div element
+                const newMsg = document.createElement('div');
+                newMsg.className = 'msg outgoing';
+                newMsg.innerHTML = `<strong>You:</strong> ${input.value}`;
+                
+                // Add to layout and auto-scroll down
+                chatBox.appendChild(newMsg);
+                chatBox.scrollTop = chatBox.scrollHeight;
+                
+                // Clear the entry field box
+                input.value = "";
+            }
+        }
 
-        <!-- Strike System Information Tab -->
-        <div class="strike-counter">
-            <h3>⚠️ Safety Strike System (3-Chance Policy)</h3>
-            <p>ClassPal has zero tolerance for bad links or harmful language. Every account has exactly 3 chances.</p>
-            <p style="margin-top: 10px; font-weight: bold;">If the limit goes up, the account is permanently deleted and blocked from making a new one.</p>
-            <button class="btn btn-danger" onclick="alert('Viewing Current Strike Log...')">View Account Status</button>
-        </div>
-    </div>
-
+        // Trigger send button automatically when pressing keyboard Enter Key
+        function handleKeyPress(event) {
+            if (event.key === "Enter") {
+                sendMessage();
+            }
+        }
+    </script>
 </body>
 </html>
