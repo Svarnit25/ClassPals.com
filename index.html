@@ -1,122 +1,294 @@
-<!-- ==========================================
-     PARENTAL CONTROLS & ACCOUNT MANAGEMENT APP
-     ========================================== -->
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Premium Unified App Core</title>
+    <style>
+        /* --- GLOBAL APP BASIS --- */
+        body, html {
+            margin: 0; padding: 0;
+            height: 100%;
+            font-family: 'Segoe UI', system-ui, -apple-system, sans-serif;
+            background-color: #f8fafc;
+            color: #1e293b;
+            overflow: hidden;
+        }
 
-<!-- 1. MODERN CSS STYLES (Keeps inputs clean and fixes raw layout bugs) -->
-<style>
-    /* Parent Overlay Container */
-    .parental-modal-overlay {
-        font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-        background: rgba(15, 23, 42, 0.6);
-        position: fixed;
-        top: 0; left: 0; width: 100%; height: 100%;
-        display: flex; justify-content: center; align-items: center;
-        z-index: 9999;
-    }
+        .app-container {
+            display: flex;
+            width: 100vw; height: 100vh;
+        }
 
-    /* Modern Rounded Modal Card Box */
-    .parental-modal {
-        background: #ffffff;
-        border-radius: 16px;
-        box-shadow: 0 10px 30px rgba(0, 0, 0, 0.2);
-        padding: 24px;
-        width: 100%;
-        max-width: 480px;
-        box-sizing: border-box;
-    }
+        /* --- MODERN SIDEBAR LINK STYLES --- */
+        .sidebar {
+            width: 260px;
+            background: #1e3a8a;
+            color: white;
+            display: flex; flex-direction: column;
+            padding: 20px 0;
+            box-shadow: 4px 0 10px rgba(0,0,0,0.05);
+            z-index: 10;
+        }
+        .sidebar-brand {
+            font-size: 20px; font-weight: bold;
+            padding: 0 20px 20px 20px;
+            border-bottom: 1px solid rgba(255,255,255,0.1);
+            margin-bottom: 20px;
+            display: flex; align-items: center; gap: 10px;
+        }
+        .sidebar-nav-item {
+            padding: 14px 20px;
+            color: #cbd5e1;
+            text-decoration: none;
+            font-weight: 600;
+            font-size: 14px;
+            cursor: pointer;
+            transition: all 0.2s ease;
+            display: block;
+            border-left: 4px solid transparent;
+        }
+        .sidebar-nav-item:hover {
+            background: rgba(255,255,255,0.08);
+            color: white;
+        }
+        .sidebar-nav-item.active-nav {
+            background: rgba(255,255,255,0.15);
+            color: white;
+            border-left-color: #3b71ca;
+        }
+        .parental-trigger-btn {
+            margin-top: auto;
+            background: #e2e8f0; color: #1e3a8a;
+            font-weight: bold; text-align: center;
+            border-radius: 8px; margin-left: 15px; margin-right: 15px;
+            padding: 12px; transition: background 0.2s;
+        }
+        .parental-trigger-btn:hover { background: white; }
 
-    /* Premium Navigation Tabs (Adjusted for 4 Tabs) */
-    .modal-tabs-header {
-        display: flex;
-        border-bottom: 2px solid #e2e8f0;
-        margin-bottom: 20px;
-        gap: 4px;
-    }
-    .tab-toggle-btn {
-        flex: 1;
-        padding: 12px 2px;
-        background: none;
-        border: none;
-        font-weight: 600;
-        font-size: 12px;
-        color: #64748b;
-        cursor: pointer;
-        border-bottom: 3px solid transparent;
-        transition: all 0.2s ease;
-    }
-    .tab-toggle-btn.active-tab {
-        color: #1e3a8a;
-        border-bottom-color: #3b71ca;
-    }
+        /* --- MAIN VIEWPORTS ENGINE --- */
+        .main-workspace {
+            flex: 1;
+            display: flex; flex-direction: column;
+            position: relative;
+            background: #f1f5f9;
+        }
+        .app-view {
+            flex: 1;
+            padding: 30px;
+            display: none;
+            overflow-y: auto;
+        }
+        .app-view.active-view { display: block; }
 
-    /* Beautiful Customized Input Fields */
-    .nice-input-box {
-        width: 100%;
-        padding: 12px 14px;
-        margin: 8px 0 16px 0;
-        border: 2px solid #cbd5e1;
-        border-radius: 8px;
-        font-size: 14px;
-        color: #334155;
-        box-sizing: border-box;
-        outline: none;
-        transition: border-color 0.2s, box-shadow 0.2s;
-    }
-    .nice-input-box:focus {
-        border-color: #3b71ca;
-        box-shadow: 0 0 0 3px rgba(59, 113, 202, 0.15);
-    }
+        /* --- CHATBOX INTERFACE (FIXES THE UNSTYLED BUGS FROM image_716e3c.png) --- */
+        .chat-input-area { 
+            display: flex; 
+            padding: 15px 25px; 
+            background: white; 
+            border-top: 1px solid #cbd5e1; 
+            gap: 12px;
+            align-items: center;
+        }
+        .chat-input { 
+            flex: 1; 
+            padding: 12px 16px; 
+            border: 2px solid #cbd5e1; 
+            border-radius: 8px; 
+            outline: none; 
+            font-size: 14px; 
+            color: #334155;
+            transition: border-color 0.2s;
+        }
+        .chat-input:focus { border-color: #3b71ca; }
+        .send-btn { 
+            background: #3b71ca; 
+            color: white; 
+            border: none; 
+            padding: 12px 24px; 
+            border-radius: 8px; 
+            cursor: pointer; 
+            font-weight: bold; 
+            font-size: 14px;
+            transition: background 0.2s, transform 0.1s;
+        }
+        .send-btn:hover { background: #2a5298; }
+        .send-btn:active { transform: scale(0.98); }
 
-    /* Button Custom Styles */
-    .action-btn {
-        width: 100%;
-        padding: 12px;
-        border: none;
-        border-radius: 8px;
-        font-weight: bold;
-        font-size: 14px;
-        cursor: pointer;
-        transition: background 0.2s, transform 0.1s;
-    }
-    .action-btn:active { transform: scale(0.98); }
+        /* --- MODERN PARENTAL CONTROL MODAL STYLES (image_71723b.png OVERHAUL) --- */
+        .parental-modal-overlay {
+            background: rgba(15, 23, 42, 0.6);
+            position: fixed;
+            top: 0; left: 0; width: 100vw; height: 100vh;
+            display: none; justify-content: center; align-items: center;
+            z-index: 9999;
+            backdrop-filter: blur(4px);
+        }
+        .parental-modal {
+            background: #ffffff;
+            border-radius: 16px;
+            box-shadow: 0 20px 40px rgba(0, 0, 0, 0.2);
+            padding: 24px;
+            width: 100%; max-width: 480px;
+            box-sizing: border-box;
+            animation: modalPop 0.25s ease-out;
+        }
+        @keyframes modalPop {
+            from { transform: scale(0.92); opacity: 0; }
+            to { transform: scale(1); opacity: 1; }
+        }
+
+        /* 4-Tab Navigation Systems */
+        .modal-tabs-header {
+            display: flex;
+            border-bottom: 2px solid #e2e8f0;
+            margin-bottom: 20px;
+            gap: 4px;
+        }
+        .tab-toggle-btn {
+            flex: 1;
+            padding: 12px 2px;
+            background: none; border: none;
+            font-weight: 600; font-size: 12px;
+            color: #64748b; cursor: pointer;
+            border-bottom: 3px solid transparent;
+            transition: all 0.2s ease;
+        }
+        .tab-toggle-btn.active-tab {
+            color: #1e3a8a;
+            border-bottom-color: #3b71ca;
+        }
+
+        /* Input Overhauls */
+        .nice-input-box {
+            width: 100%;
+            padding: 12px 14px;
+            margin: 8px 0 16px 0;
+            border: 2px solid #cbd5e1;
+            border-radius: 8px;
+            font-size: 14px; color: #334155;
+            box-sizing: border-box; outline: none;
+            transition: border-color 0.2s, box-shadow 0.2s;
+        }
+        .nice-input-box:focus {
+            border-color: #3b71ca;
+            box-shadow: 0 0 0 3px rgba(59, 113, 202, 0.15);
+        }
+
+        /* Button Action Varietals */
+        .action-btn {
+            width: 100%; padding: 12px;
+            border: none; border-radius: 8px;
+            font-weight: bold; font-size: 14px; cursor: pointer;
+            transition: background 0.2s, transform 0.1s;
+        }
+        .action-btn:active { transform: scale(0.98); }
+        .btn-blue  { background: #3b71ca; color: white; }
+        .btn-blue:hover { background: #2a5298; }
+        .btn-red   { background: #dc3545; color: white; }
+        .btn-red:hover { background: #b02a37; }
+        .btn-green { background: #198754; color: white; }
+        .btn-green:hover { background: #146c43; }
+        .btn-gray  { background: #6c757d; color: white; }
+        .btn-gray:hover { background: #5c636a; }
+
+        .tab-content-panel { display: none; }
+        .tab-content-panel.show-panel { display: block; }
+
+        /* Card Content Displays */
+        .content-card {
+            background: white; padding: 24px;
+            border-radius: 12px; box-shadow: 0 4px 6px -1px rgba(0,0,0,0.05);
+            margin-bottom: 20px;
+        }
+    </style>
+</head>
+<body>
+
+<div class="app-container">
     
-    .btn-blue  { background: #3b71ca; color: white; }
-    .btn-blue:hover { background: #2a5298; }
-    
-    .btn-red   { background: #dc3545; color: white; }
-    .btn-red:hover { background: #b02a37; }
-    
-    .btn-green { background: #198754; color: white; }
-    .btn-green:hover { background: #146c43; }
-    
-    .btn-gray  { background: #6c757d; color: white; }
-    .btn-gray:hover { background: #5c636a; }
-
-    /* Hidden Utilities */
-    .tab-content-panel { display: none; }
-    .tab-content-panel.show-panel { display: block; }
-</style>
-
-
-<!-- 2. THE HTML MARKUP SETUP -->
-<div class="parental-modal-overlay">
-    <div class="parental-modal">
+    <!-- SYSTEM NAVIGATION SIDEBAR -->
+    <div class="sidebar">
+        <div class="sidebar-brand">Workspace Core 🚀</div>
+        <div class="sidebar-nav-item active-nav" id="tab-dashboard" onclick="switchMainView('dashboard-view', this)">Dashboard Panel</div>
+        <div class="sidebar-nav-item" id="tab-lounge" onclick="switchMainView('lounge-view', this)">Study Lounge</div>
         
-        <!-- Header Section -->
-        <h2 style="text-align: center; color: #1e3a8a; margin: 0 0 4px 0;">Parental Security Controls 🔒</h2>
-        <p style="text-align: center; color: #64748b; font-size: 13px; margin: 0 0 20px 0;">
-            Manage restrictions, user privacy rules, and core account security.
-        </p>
+        <!-- CLAN TEAMS CONTEXT SECTION -->
+        <div class="sidebar-nav-item" id="clan-teams-container" onclick="switchMainView('clan-view', this)">🛡️ Clan Teams View</div>
+        
+        <!-- SECURE SYSTEM EXEMPTION LINKS -->
+        <div class="sidebar-nav-item" id="password-change-tab-btn" onclick="switchMainView('password-view', this)">🔑 Password Core</div>
+        <div class="sidebar-nav-item" id="logout-tab-btn" onclick="logoutAppSession()">🚪 Log Out System</div>
+        
+        <!-- MODAL TOGGLE ACTUATOR -->
+        <div class="parental-trigger-btn" onclick="openParentalControlsModal()">Parental Security 🔒</div>
+    </div>
 
-        <!-- 4-Tab Header Navigation Links -->
-        <div class="modal-tabs-header">
-            <button class="tab-toggle-btn active-tab" onclick="changeParentalTab(event, 'school-mode-panel')">School Mode</button>
-            <button class="tab-toggle-btn" onclick="changeParentalTab(event, 'user-password-panel')">Update Password</button>
-            <button class="tab-toggle-btn" onclick="changeParentalTab(event, 'security-pin-panel')">School PIN</button>
-            <button class="tab-toggle-btn" style="color: #dc3545;" onclick="changeParentalTab(event, 'delete-account-panel')">Delete Account</button>
+    <!-- MAIN APP WORKSPACE VIEWPORTS -->
+    <div class="main-workspace">
+        
+        <!-- View 1: Dashboard -->
+        <div id="dashboard-view" class="app-view active-view">
+            <div class="content-card">
+                <h2>Welcome Back to Your Main Console</h2>
+                <p>All core applications running perfectly. Use the security modal below to test strict educational lockdown configurations.</p>
+            </div>
         </div>
 
-        <!-- PANEL 1: School Mode Activation Trigger -->
+        <!-- View 2: Study Lounge -->
+        <div id="lounge-view" class="app-view">
+            <div class="content-card">
+                <h2>📚 Academic Study Lounge</h2>
+                <p>Access virtual learning resources, document archives, and homework logs tracking system activities here.</p>
+            </div>
+        </div>
+
+        <!-- View 3: Clan Teams Section (Must Lockout on School Mode) -->
+        <div id="clan-view" class="app-view">
+            <div class="content-card" style="border-left: 5px solid #3b71ca;">
+                <h2>🛡️ Clan Teams Command Base</h2>
+                <p>Coordinate gaming leagues, team chats, tournaments, and social community metrics here.</p>
+            </div>
+        </div>
+
+        <!-- View 4: Primary User Account Password Configuration (Exempt View) -->
+        <div id="password-view" class="app-view">
+            <div class="content-card">
+                <h2>🔑 User Password Update Core</h2>
+                <p>Change your public logging configurations below safely.</p>
+                <label style="font-weight:600; font-size:14px;">Update User Password Input Box:</label>
+                <input type="password" class="nice-input-box" style="max-width: 320px; display:block;" placeholder="Type new keyphrase">
+                <button class="action-btn btn-blue" style="max-width:200px;">Save Changes</button>
+            </div>
+        </div>
+
+        <!-- REFIXED CHAT COMPONENT AREA (Eliminates bugs shown inside image_716e3c.png) -->
+        <div class="chat-input-area">
+            <input type="text" class="chat-input" placeholder="Compose filtered message...">
+            <button class="send-btn" onclick="alert('Message Sent: ' + document.querySelector('.chat-input').value)">Transmit</button>
+        </div>
+
+    </div>
+</div>
+
+<!-- PREMIUM 4-TAB SECURITY CONTROL MODAL OVERLAY -->
+<div class="parental-modal-overlay" id="parentalOverlay">
+    <div class="parental-modal">
+        
+        <h2 style="text-align: center; color: #1e3a8a; margin: 0 0 4px 0;">Parental Security Controls 🔒</h2>
+        <p style="text-align: center; color: #64748b; font-size: 13px; margin: 0 0 20px 0;">
+            Configure access thresholds and operational rules.
+        </p>
+
+        <!-- 4-TAB ASSIGNMENTS HEADER LINK BAR -->
+        <div class="modal-tabs-header">
+            <button class="tab-toggle-btn active-tab" onclick="changeParentalTab(event, 'school-mode-panel')">School Mode</button>
+            <button class="tab-toggle-btn" onclick="changeParentalTab(event, 'user-password-panel')">Update Pass</button>
+            <button class="tab-toggle-btn" onclick="changeParentalTab(event, 'security-pin-panel')">School PIN</button>
+            <button class="tab-toggle-btn" style="color: #dc3545;" onclick="changeParentalTab(event, 'delete-account-panel')">Delete Profile</button>
+        </div>
+
+        <!-- TAB CONTENT PANEL 1: School Mode Lock Out Core -->
         <div id="school-mode-panel" class="tab-content-panel show-panel">
             <label style="font-weight: 600; color: #334155; font-size: 14px;">Enter 4-Digit Security PIN:</label>
             <input type="password" id="input-pin-auth" class="nice-input-box" placeholder="••••" maxlength="4">
@@ -126,17 +298,17 @@
             </button>
         </div>
 
-        <!-- PANEL 2: Force New Password -->
+        <!-- TAB CONTENT PANEL 2: Direct Account Overwrite Options -->
         <div id="user-password-panel" class="tab-content-panel">
             <label style="font-weight: 600; color: #334155; font-size: 14px;">Overwrite Account Login Password:</label>
-            <input type="password" id="input-new-password" class="nice-input-box" placeholder="Type premium new login password">
+            <input type="password" id="input-new-password" class="nice-input-box" placeholder="Type new login password">
             
             <button class="action-btn btn-red" onclick="applyAccountPasswordOverride()">
                 Force Update Password
             </button>
         </div>
 
-        <!-- PANEL 3: Change School Mode PIN Override -->
+        <!-- TAB CONTENT PANEL 3: Change Operational Keyphrase PIN -->
         <div id="security-pin-panel" class="tab-content-panel">
             <label style="font-weight: 600; color: #334155; font-size: 14px;">Current 4-Digit PIN:</label>
             <input type="password" id="input-current-pin" class="nice-input-box" placeholder="••••" maxlength="4">
@@ -149,19 +321,19 @@
             </button>
         </div>
 
-        <!-- PANEL 4: Permanent Account Deletion Engine (NEW TAB) -->
+        <!-- TAB CONTENT PANEL 4: Permanent Account Wipeout Routine -->
         <div id="delete-account-panel" class="tab-content-panel">
             <div style="background: #fff5f5; border-left: 4px solid #dc3545; padding: 12px; margin-bottom: 15px; border-radius: 6px;">
-                <p style="color: #b02a37; font-weight: bold; font-size: 13px; margin: 0 0 4px 0;">⚠️ CRITICAL WARNING</p>
+                <p style="color: #b02a37; font-weight: bold; font-size: 13px; margin: 0 0 4px 0;">⚠️ PERMANENT CLEARANCE</p>
                 <p style="color: #c92a2a; font-size: 12px; margin: 0; line-height: 1.4;">
-                    This action is absolutely permanent. Your complete user file, saved progress, clean data configurations, and team records will be instantly wiped out.
+                    Wipes out all configurations, local databases, cache profiles, and system structures instantly. This is irreversible.
                 </p>
             </div>
 
             <label style="font-weight: 600; color: #334155; font-size: 13px;">Confirm Security PIN:</label>
             <input type="password" id="input-delete-pin" class="nice-input-box" placeholder="••••" maxlength="4">
 
-            <label style="font-weight: 600; color: #334155; font-size: 13px;">Type <span style="color: #dc3545; font-weight: bold;">DELETE</span> to confirm intent:</label>
+            <label style="font-weight: 600; color: #334155; font-size: 13px;">Type <span style="color: #dc3545; font-weight: bold;">DELETE</span> below to execute:</label>
             <input type="text" id="input-delete-confirm" class="nice-input-box" placeholder="TYPE DELETE">
 
             <button class="action-btn btn-red" style="background: #b02a37;" onclick="deleteAccountPermanently()">
@@ -169,153 +341,151 @@
             </button>
         </div>
 
-        <!-- Footer Exit Actions -->
+        <!-- Universal Footer Close Mechanics -->
         <div style="margin-top: 20px; border-top: 1px solid #e2e8f0; padding-top: 15px;">
-            <button class="action-btn btn-gray" onclick="document.querySelector('.parental-modal-overlay').style.display='none'">Exit Setup</button>
+            <button class="action-btn btn-gray" onclick="closeParentalControlsModal()">Exit Setup</button>
         </div>
 
     </div>
 </div>
 
-
-<!-- 3. JAVASCRIPT LOGIC IMPLEMENTATION -->
+<!-- LOGIC SCRIPTS RUNNER CONTAINER -->
 <script>
-    // System core operational variables
-    let savedParentalPin = "1234"; // Master PIN
-    let schoolModeEnabled = false;
+    let masterSecurityPin = "1234";
+    let schoolModeActive = false;
 
-    // A. Tab-switching core interface logic
-    function changeParentalTab(event, targetPanelId) {
-        document.querySelectorAll('.tab-content-panel').forEach(panel => {
-            panel.classList.remove('show-panel');
-        });
-        document.querySelectorAll('.tab-toggle-btn').forEach(btn => {
-            btn.classList.remove('active-tab');
-        });
+    // A. Main Screen App Switcher Logic
+    function switchMainView(viewId, element) {
+        document.querySelectorAll('.app-view').forEach(view => view.classList.remove('active-view'));
+        document.querySelectorAll('.sidebar-nav-item').forEach(nav => nav.classList.remove('active-nav'));
+        
+        document.getElementById(viewId).classList.add('active-view');
+        element.classList.add('active-nav');
+    }
 
-        document.getElementById(targetPanelId).classList.add('show-panel');
+    // B. Modal View Controllers
+    function openParentalControlsModal() { document.getElementById('parentalOverlay').style.display = 'flex'; }
+    function closeParentalControlsModal() { document.getElementById('parentalOverlay').style.display = 'none'; }
+
+    // C. Modal Nested Tab Switchers
+    function changeParentalTab(event, panelId) {
+        document.querySelectorAll('.tab-content-panel').forEach(p => p.classList.remove('show-panel'));
+        document.querySelectorAll('.tab-toggle-btn').forEach(b => b.classList.remove('active-tab'));
+        
+        document.getElementById(panelId).classList.add('show-panel');
         event.currentTarget.classList.add('active-tab');
     }
 
-    // B. Strict School Mode Controller (Lockdown Engine)
+    // D. Strict School Mode Locking Mechanics (Bugs Resolution)
     function toggleSchoolLockdownMode() {
-        const pinValue = document.getElementById('input-pin-auth').value;
-
-        if (pinValue !== savedParentalPin) {
-            alert("❌ Invalid Parental Security PIN! Action Aborted.");
+        const inputPin = document.getElementById('input-pin-auth').value;
+        if (inputPin !== masterSecurityPin) {
+            alert("❌ Denied: Invalid Security PIN!");
             return;
         }
 
         document.getElementById('input-pin-auth').value = "";
-        schoolModeEnabled = !schoolModeEnabled;
-
-        executeLockdownProtocol();
+        schoolModeActive = !schoolModeActive;
+        
+        applyLockdownProtocols();
     }
 
-    // C. App Lockdown Routine Logic
-    function executeLockdownProtocol() {
-        const allAppTabs = document.querySelectorAll('.sidebar-tab, .nav-link, .tab-item');
-        const clanTeamsModule = document.getElementById('clan-teams-container');
-
-        if (schoolModeEnabled) {
-            alert("🔒 School Mode Activated! Non-essential systems are locked down.");
-
-            if (clanTeamsModule) {
-                clanTeamsModule.style.display = 'none';
+    function applyLockdownProtocols() {
+        const clanTeamsTab = document.getElementById('clan-teams-container');
+        const allNavs = document.querySelectorAll('.sidebar-nav-item');
+        
+        if (schoolModeActive) {
+            alert("🔒 School Mode Activated! Non-essential features locked down completely.");
+            
+            // 1. Immediately force close Clan Teams Tab from layout view
+            if(clanTeamsTab) {
+                clanTeamsTab.style.display = 'none';
             }
+            
+            // 2. Fall back cleanly to the main dashboard panel view automatically
+            switchMainView('dashboard-view', document.getElementById('tab-dashboard'));
 
-            allAppTabs.forEach(tab => {
-                const tabText = tab.textContent.trim().toLowerCase();
-                const tabId = tab.id ? tab.id.toLowerCase() : "";
-
-                // EXEMPTIONS: Keep Log Out and Password update options unlocked!
-                const isExempt = tabText.includes('log out') || 
-                                 tabText.includes('password') || 
-                                 tabId.includes('logout') || 
-                                 tabId.includes('password');
-
+            // 3. Scan and lockdown all tabs except Log Out and Password Core
+            allNavs.forEach(nav => {
+                const isExempt = nav.id === 'logout-tab-btn' || nav.id === 'password-change-tab-btn';
                 if (!isExempt) {
-                    tab.classList.remove('active-view', 'selected'); 
-                    tab.style.pointerEvents = 'none';
-                    tab.style.opacity = '0.15';
+                    nav.style.pointerEvents = 'none';
+                    nav.style.opacity = '0.25';
                 }
             });
-
         } else {
-            alert("🔓 School Mode Deactivated! Full access restored.");
-
-            if (clanTeamsModule) {
-                clanTeamsModule.style.display = 'block';
-            }
-
-            allAppTabs.forEach(tab => {
-                tab.style.pointerEvents = 'auto';
-                tab.style.opacity = '1';
+            alert("🔓 School Mode Deactivated! Full access profiles restored.");
+            
+            // Restore Clan Teams Section visibility
+            if(clanTeamsTab) { clanTeamsTab.style.display = 'block'; }
+            
+            // Restore functionality to all app views
+            allNavs.forEach(nav => {
+                nav.style.pointerEvents = 'auto';
+                nav.style.opacity = '1';
             });
         }
     }
 
-    // D. Force Account Password Replacement
+    // E. Force Update Account Password Action Panel
     function applyAccountPasswordOverride() {
-        const typedPassword = document.getElementById('input-new-password').value;
-
-        if (typedPassword.trim() === "") {
-            alert("❌ New account password field cannot be left blank.");
+        const typedPass = document.getElementById('input-new-password').value;
+        if(typedPass.trim() === "") {
+            alert("❌ Input cannot be left empty.");
             return;
         }
-
-        alert("✅ Account password updated successfully!");
+        alert("✅ Account password updated to: " + typedPass);
         document.getElementById('input-new-password').value = "";
     }
 
-    // E. Change School Mode Access PIN Code
+    // F. Update Parental Configuration Authentication PIN
     function changeOperationalPin() {
-        const matchingCurrentPin = document.getElementById('input-current-pin').value;
-        const proposedNewPin = document.getElementById('input-new-pin').value;
+        const currentPin = document.getElementById('input-current-pin').value;
+        const newPin = document.getElementById('input-new-pin').value;
 
-        if (matchingCurrentPin !== savedParentalPin) {
-            alert("❌ Current PIN validation failed.");
+        if (currentPin !== masterSecurityPin) {
+            alert("❌ Current Parental security PIN validation failed.");
             return;
         }
-        if (proposedNewPin.length !== 4 || isNaN(proposedNewPin)) {
-            alert("❌ Entry error: The new PIN code must be exactly 4 digits long.");
+        if (newPin.length !== 4 || isNaN(newPin)) {
+            alert("❌ Size specification error: PIN must be exactly 4 numerical digits.");
             return;
         }
 
-        savedParentalPin = proposedNewPin;
-        alert("✅ Parental Security PIN updated successfully!");
+        masterSecurityPin = newPin;
+        alert("✅ Master operational PIN successfully set to: " + newPin);
         document.getElementById('input-current-pin').value = "";
         document.getElementById('input-new-pin').value = "";
     }
 
-    // F. PERMANENT ACCOUNT DELETION SYSTEM (NEW PROTECTION ROUTINE)
+    // G. Account Self-Destruct Termination Routine
     function deleteAccountPermanently() {
-        const deletePin = document.getElementById('input-delete-pin').value;
-        const deleteConfirmText = document.getElementById('input-delete-confirm').value;
+        const pPin = document.getElementById('input-delete-pin').value;
+        const textCheck = document.getElementById('input-delete-confirm').value;
 
-        // Validation Check 1: Security PIN
-        if (deletePin !== savedParentalPin) {
-            alert("❌ Denied: Security PIN is incorrect.");
+        if (pPin !== masterSecurityPin) {
+            alert("❌ Denied: Security PIN code verification failed.");
+            return;
+        }
+        if (textCheck !== "DELETE") {
+            alert("❌ Denied: Configuration text must match 'DELETE' string explicitly.");
             return;
         }
 
-        // Validation Check 2: Precise Text String Match
-        if (deleteConfirmText !== "DELETE") {
-            alert("❌ Denied: You must type 'DELETE' in all caps to confirm.");
-            return;
-        }
+        const safetyCheck = confirm("🚨 ATTENTION: This wipes your account and database permanently. Do you wish to continue?");
+        if (!safetyCheck) return;
 
-        // Final Native Modal Warning Safeguard
-        const deepCheck = confirm("🚨 STOP AND CONFIRM: Are you 100% sure you want to completely destroy this account? This process cannot be reversed.");
-        if (!deepCheck) return;
-
-        // Execute complete profile storage clearing routine
         localStorage.clear();
         sessionStorage.clear();
+        alert("💥 Profile destroyed. Reloading system...");
+        window.location.reload();
+    }
 
-        alert("💥 Success: Account has been entirely removed from database storage. System reloading...");
-        
-        // Refresh site view to route user back to entry screen 
+    function logoutAppSession() {
+        alert("🚪 Logging out of secure platform instance...");
         window.location.reload();
     }
 </script>
+
+</body>
+</html>
