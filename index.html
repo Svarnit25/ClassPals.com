@@ -528,6 +528,56 @@
     function logoutAppSession() {
         alert("🚪 Disconnecting system session layer...");
         window.location.reload();
+        <!-- DUAL-INPUT CHAT SYSTEM -->
+<div class="chat-panel-wrapper" style="padding: 15px; background: #0f1422; border-top: 1px solid rgba(255,255,255,0.05);">
+    <!-- Box 1: Filter Keywords -->
+    <div style="display: flex; align-items: center; gap: 10px; margin-bottom: 10px;">
+        <span style="font-size: 12px; font-weight: 800; color: #8b5cf6; white-space: nowrap;">⛔ FILTER KEYWORDS:</span>
+        <input type="text" id="chat-filter-keywords" style="flex: 1; padding: 8px; background: rgba(255,255,255,0.05); border: 1px solid rgba(255,255,255,0.1); border-radius: 6px; color: #fff;" placeholder="e.g., toxic, spam (comma separated)">
+    </div>
+    
+    <!-- Box 2: Main Chat Input -->
+    <div style="display: flex; gap: 10px;">
+        <input type="text" id="main-chat-message" style="flex: 1; padding: 12px; background: #161f30; border: 1px solid rgba(255,255,255,0.1); border-radius: 8px; color: #fff;" placeholder="Type your message here...">
+        <button onclick="executeFilteredTransmission()" style="padding: 12px 24px; background: #3b82f6; color: white; border: none; border-radius: 8px; font-weight: bold; cursor: pointer;">Send</button>
+    </div>
+</div>
+        <!-- THE TWO REQUESTED TABS ONLY -->
+<div class="modal-tabs-header" style="display: flex; gap: 10px; margin-bottom: 20px;">
+    <button class="tab-toggle-btn active-tab" onclick="changeParentalTab(event, 'account-password-panel')" style="flex: 1; padding: 10px; cursor: pointer;">Changing Account Password</button>
+    <button class="tab-toggle-btn" onclick="changeParentalTab(event, 'school-mode-password-panel')" style="flex: 1; padding: 10px; cursor: pointer;">Changing School Mode Password</button>
+</div>
+
+<!-- TAB PANEL 1: Changing Account Password -->
+<div id="account-password-panel" class="tab-content-panel show-panel">
+    <label style="display: block; font-size: 13px; color: #9ca3af; margin-bottom: 5px;">NEW ACCOUNT PASSWORD:</label>
+    <input type="password" id="input-new-account-password" style="width: 100%; padding: 10px; margin-bottom: 15px; border-radius: 6px;" placeholder="Enter new account password">
+    <button onclick="applyAccountPasswordOverride()" style="width: 100%; padding: 10px; background: #3b82f6; color: white; border: none; border-radius: 6px; cursor: pointer;">Update Account Password</button>
+</div>
+
+<!-- TAB PANEL 2: Changing School Mode Password -->
+<div id="school-mode-password-panel" class="tab-content-panel" style="display: none;">
+    <label style="display: block; font-size: 13px; color: #9ca3af; margin-bottom: 5px;">CURRENT 4-DIGIT PIN:</label>
+    <input type="password" id="input-current-school-pin" maxlength="4" style="width: 100%; padding: 10px; margin-bottom: 10px; border-radius: 6px;" placeholder="••••">
+    
+    <label style="display: block; font-size: 13px; color: #9ca3af; margin-bottom: 5px;">NEW 4-DIGIT PIN:</label>
+    <input type="password" id="input-new-school-pin" maxlength="4" style="width: 100%; padding: 10px; margin-bottom: 15px; border-radius: 6px;" placeholder="••••">
+    
+    <button onclick="changeSchoolModePin()" style="width: 100%; padding: 10px; background: #8b5cf6; color: white; border: none; border-radius: 6px; cursor: pointer;">Update School Mode Password</button>
+</div>
+        // Tab Switching functionality for the 2 requested tabs
+function changeParentalTab(event, panelId) {
+    // Hide both panels
+    document.getElementById('account-password-panel').style.display = 'none';
+    document.getElementById('school-mode-password-panel').style.display = 'none';
+    
+    // Show selected panel
+    document.getElementById(panelId).style.display = 'block';
+    
+    // Reset active tab button styles
+    document.querySelectorAll('.tab-toggle-btn').forEach(btn => btn.classList.remove('active-tab'));
+    event.currentTarget.classList.add('active-tab');
+}
     }
 </script>
 
