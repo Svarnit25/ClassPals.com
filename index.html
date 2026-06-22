@@ -236,7 +236,10 @@
                             <h2 id="activeServerHeaderTitle">🌐 Loading Server Container...</h2>
                             <p id="activeServerMetaSubtitle" style="font-size:12px; color:#64748b; margin-top:2px;">Owner Node: Loading...</p>
                         </div>
-                        <button class="btn-action decline" onclick="exitActiveServerView()">⬅️ Leave Server Display View</button>
+                        <div style="display: flex; gap: 8px;">
+                            <button class="btn-action decline" id="deleteServerBtn" style="display:none;" onclick="executeServerDeletion()">🔥 Delete Server Instance</button>
+                            <button class="btn-action decline" style="background:#64748b;" onclick="exitActiveServerView()">⬅️ Leave Server View</button>
+                        </div>
                     </div>
 
                     <div class="server-room-layout">
@@ -300,7 +303,10 @@
                             <h2 id="activeClanHeaderTitle">🎮 Loading Clan Deck...</h2>
                             <p id="activeClanSubtitleDesc" style="font-size:12px; color:#64748b; margin-top:2px;">Motto: Loading...</p>
                         </div>
-                        <button class="btn-action decline" onclick="leaveClan()">🚪 Leave Clan Alliance</button>
+                        <div style="display: flex; gap: 8px;">
+                            <button class="btn-action decline" id="disbandClanBtn" style="display:none;" onclick="executeClanDeletion()">🔥 Disband Clan Alliance</button>
+                            <button class="btn-action decline" style="background:#64748b;" onclick="leaveClan()">🚪 Leave Clan Alliance</button>
+                        </div>
                     </div>
 
                     <div class="clan-room-layout">
@@ -765,7 +771,47 @@
             document.getElementById('activeServerRoomWorkspace').style.display = 'block';
             document.getElementById('activeServerHeaderTitle').innerText = serverObj.name;
             document.getElementById('activeServerMetaSubtitle').innerText = `Unique Zone ID: ${serverObj.id} | Server Founder Node: ${serverObj.owner}`;
+            
+            // Toggle Delete Server Button Visibility based on Ownership
+            const deleteBtn = document.getElementById('deleteServerBtn');
+            if (serverObj.owner === sessionUser.id) {
+                deleteBtn.style.display = 'inline-block';
+            } else {
+                deleteBtn.style.display = 'none';
+            }
+
             syncServerUIElements();
+        }
+
+        function executeServerDeletion() {
+            if (!activeServerId) return;
+            
+            const servers = dbGet('cp_servers');
+            const matchIndex = servers.findIndex(s => s.id === activeServerId);
+            if (matchIndex === -1) return;
+            
+            if (servers[matchIndex].owner !== sessionUser.id) {
+                alert("❌ ACCESS DENIED: Only the designated Owner Node can delete this server matrix.");
+                return;
+            }
+
+            const confirmation = confirm("⚠️ CRITICAL WARNING:\nAre you absolutely certain you want to permanently delete this infrastructure server container? All message data and member linkages will be destroyed instantly.");
+            if (!confirmation) return;
+
+            const serverLabelName = servers[matchIndex].name;
+
+            // Purge the structural server tracking record
+            servers.splice(matchIndex, 1);
+            dbSet('cp_servers', servers);
+
+            // Wipe out associated system chat records
+            const chats = dbGet('cp_chats');
+            delete chats[`SERVER_${activeServerId}`];
+            dbSet('cp_chats', chats);
+
+            printTelemetry(`Permanently expunged Server Instance Node: ${activeServerId} ("${serverLabelName}")`, "error");
+            alert("🔥 Server architecture completely dropped and wiped from the registry database.");
+            exitActiveServerView();
         }
 
         function exitActiveServerView() {
@@ -970,6 +1016,14 @@
                 document.getElementById('activeClanHeaderTitle').innerText = `🛡️ Clan Workspace: ${clan.name}`;
                 document.getElementById('activeClanSubtitleDesc').innerText = `Motto: ${clan.desc || 'No motto configured.'}`;
 
+                // Toggle Disband Clan Button Visibility based on Ownership
+                const disbandBtn = document.getElementById('disbandClanBtn');
+                if (clan.owner === sessionUser.id) {
+                    disbandBtn.style.display = 'inline-block';
+                } else {
+                    disbandBtn.style.display = 'none';
+                }
+
                 // Render People in Clan List
                 const rosterContainer = document.getElementById('clanRosterDataContainer');
                 rosterContainer.innerHTML = '';
@@ -1031,6 +1085,47 @@
                     });
                 }
             }
+        }
+
+        function executeClanDeletion() {
+            const currentClanName = sessionUser.clan;
+            if (!currentClanName) return;
+
+            const clans = dbGet('cp_clans');
+            const clan = clans[currentClanName];
+            if (!clan) return;
+
+            if (clan.owner !== sessionUser.id) {
+                alert("❌ ACCESS DENIED: Only the original Clan Founder can delete this alliance workspace.");
+                return;
+            }
+
+            const confirmation = confirm(`⚠️ CRITICAL WARNING:\nAre you absolutely sure you want to permanently disband and delete "${currentClanName}"? All structural member alliances will be severed completely.`);
+            if (!confirmation) return;
+
+            const users = dbGet('cp_users');
+
+            // Strip the clan name assignment out of every member profile object node
+            clan.members.forEach(mId => {
+                if (users[mId]) users[mId].clan = "";
+            });
+            dbSet('cp_users', users);
+
+            // Evict the base clan structural object out of the index database table array
+            delete clans[currentClanName];
+            dbSet('cp_clans', clans);
+
+            // Clean up old clan chat streaming logs
+            const chats = dbGet('cp_chats');
+            delete chats[`CLAN_${currentClanName}`];
+            dbSet('cp_chats', chats);
+
+            // Refresh local current user tracking configuration
+            sessionUser = users[sessionUser.id];
+
+            printTelemetry(`Permanently dissolved and deleted Clan Alliance: "${currentClanName}"`, "error");
+            alert(`🔥 Clan alliance "${currentClanName}" has been successfully disbanded.`);
+            renderClanWorkspace();
         }
 
         function transmitClanChatMessage() {
