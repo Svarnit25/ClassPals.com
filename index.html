@@ -13,11 +13,89 @@
         }
 
         body {
-            display: flex;
-            height: 100vh;
             background-color: #f0f4f8;
             color: #333;
+            height: 100vh;
             overflow: hidden;
+        }
+
+        /* --- LOGIN SCREEN LAYOUT --- */
+        #login-page {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            height: 100vh;
+            background: linear-gradient(135deg, #3b71ca 0%, #2a5298 100%);
+        }
+
+        .login-card {
+            background: white;
+            padding: 40px;
+            border-radius: 16px;
+            box-shadow: 0 10px 25px rgba(0,0,0,0.2);
+            width: 100%;
+            max-width: 400px;
+            text-align: center;
+        }
+
+        .login-logo {
+            font-size: 32px;
+            font-weight: bold;
+            color: #3b71ca;
+            margin-bottom: 10px;
+        }
+
+        .login-subtitle {
+            font-size: 14px;
+            color: #666;
+            margin-bottom: 25px;
+        }
+
+        .login-input {
+            width: 100%;
+            padding: 14px;
+            border: 2px solid #cbd5e1;
+            border-radius: 8px;
+            outline: none;
+            font-size: 16px;
+            margin-bottom: 15px;
+            text-align: center;
+            text-transform: uppercase;
+        }
+
+        .login-input:focus {
+            border-color: #3b71ca;
+        }
+
+        .login-btn {
+            width: 100%;
+            background: #3b71ca;
+            color: white;
+            border: none;
+            padding: 14px;
+            border-radius: 8px;
+            font-size: 16px;
+            font-weight: bold;
+            cursor: pointer;
+            transition: background 0.2s;
+        }
+
+        .login-btn:hover { background: #2a5298; }
+
+        .test-ids-box {
+            background: #f1f5f9;
+            padding: 12px;
+            border-radius: 8px;
+            margin-top: 20px;
+            font-size: 13px;
+            color: #475569;
+            text-align: left;
+        }
+
+        /* --- APP MAIN SCREEN --- */
+        #app-container {
+            display: none; /* Stays hidden until logged in */
+            height: 100vh;
         }
 
         /* Sidebar Styling */
@@ -29,12 +107,23 @@
             flex-direction: column;
             justify-content: space-between;
             padding: 20px;
+            height: 100%;
+            float: left;
         }
 
         .logo {
             font-size: 24px;
             font-weight: bold;
-            margin-bottom: 30px;
+            margin-bottom: 5px;
+        }
+
+        .user-profile-badge {
+            font-size: 13px;
+            background: rgba(255, 255, 255, 0.2);
+            padding: 6px 10px;
+            border-radius: 6px;
+            margin-bottom: 25px;
+            display: inline-block;
         }
 
         .menu-item {
@@ -57,15 +146,14 @@
             padding-top: 15px;
         }
 
-        /* Main Content Container */
-        .main-container {
-            flex: 1;
-            display: flex;
-            flex-direction: column;
+        /* Content Container */
+        .main-content-pane {
+            margin-left: 260px;
+            height: 100%;
             overflow-y: auto;
         }
 
-        /* Dashboard Section */
+        /* Sections Layout */
         .page-section {
             padding: 30px;
             display: none;
@@ -82,6 +170,11 @@
             margin-bottom: 30px;
         }
 
+        .status-container {
+            display: flex;
+            gap: 10px;
+        }
+
         .badge {
             background-color: #14a44d;
             color: white;
@@ -91,7 +184,12 @@
             font-size: 14px;
         }
 
-        /* Feature Cards Grid */
+        .school-badge {
+            background-color: #e4a11b;
+            display: none; /* Shows up when parental lock is on */
+        }
+
+        /* Dashboard Cards Grid */
         .grid {
             display: grid;
             grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
@@ -122,7 +220,7 @@
         .school-mode { background-color: #e4a11b; }
         .safety-strike { background-color: #dc4c64; }
 
-        .btn {
+        .action-btn {
             background: white;
             color: #e4a11b;
             border: none;
@@ -131,7 +229,10 @@
             font-weight: bold;
             margin-top: 15px;
             cursor: pointer;
+            transition: opacity 0.2s;
         }
+
+        .action-btn:hover { opacity: 0.9; }
 
         /* --- OPTION 1: CHAT PANEL STYLING --- */
         .chat-container {
@@ -210,125 +311,365 @@
             font-weight: bold;
         }
 
-        .send-btn:hover { background: #2a5298; }
+        /* --- MODAL WINDOWS SYSTEM (OPTIONS 2 & 3) --- */
+        .modal-overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.6);
+            display: none; /* Controlled via JavaScript */
+            align-items: center;
+            justify-content: center;
+            z-index: 1000;
+        }
+
+        .modal-box {
+            background: white;
+            padding: 30px;
+            border-radius: 16px;
+            width: 90%;
+            max-width: 420px;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.3);
+            text-align: center;
+            animation: popIn 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+        }
+
+        @keyframes popIn {
+            from { transform: scale(0.8); opacity: 0; }
+            to { transform: scale(1); opacity: 1; }
+        }
+
+        .modal-box h3 {
+            margin-bottom: 12px;
+            color: #2a5298;
+            font-size: 22px;
+        }
+
+        .modal-box p {
+            font-size: 14px;
+            color: #64748b;
+            margin-bottom: 20px;
+        }
+
+        .modal-input {
+            width: 100%;
+            padding: 12px;
+            border: 2px solid #cbd5e1;
+            border-radius: 8px;
+            outline: none;
+            font-size: 15px;
+            margin-bottom: 15px;
+            text-align: center;
+        }
+
+        .modal-buttons {
+            display: flex;
+            gap: 10px;
+        }
+
+        .m-btn {
+            flex: 1;
+            padding: 12px;
+            border: none;
+            border-radius: 8px;
+            font-weight: bold;
+            cursor: pointer;
+        }
+
+        .m-btn.confirm { background: #3b71ca; color: white; }
+        .m-btn.cancel { background: #e2e8f0; color: #475569; }
+
+        /* Lock state styling */
+        .locked-menu-disable {
+            opacity: 0.5;
+            cursor: not-allowed !important;
+        }
     </style>
 </head>
 <body>
 
-    <!-- Sidebar Layout -->
-    <div class="sidebar">
-        <div>
-            <div class="logo">ClassPal.com</div>
-            <div class="menu-item active" onclick="switchPage('dashboard', this)">Dashboard</div>
-            <div class="menu-item" onclick="alert('My Servers feature coming soon!')">My Servers</div>
-            <div class="menu-item" onclick="alert('Clan Teams feature coming soon!')">Clan Teams</div>
-            <div class="menu-item" onclick="switchPage('direct-messages', this)">Direct Messages 💬</div>
-            <div class="menu-item" onclick="alert('Add Friends feature coming soon!')">Add Friends (by ID)</div>
-            <div class="menu-item" onclick="alert('Safety Log feature coming soon!')">Safety Log</div>
-        </div>
-        <div class="creators">
-            <strong>Created & Made By:</strong><br>
-            Svarnit Gupta &<br>Yuvaan Singh Parihar
+    <!-- ==========================================
+         LAYER 1: LOGIN COMPONENT 
+         ========================================== -->
+    <div id="login-page">
+        <div class="login-card">
+            <div class="login-logo">ClassPal</div>
+            <div class="login-subtitle">🛡️ The Safe Place for Kids to Hangout</div>
+            
+            <input type="text" id="userIdField" class="login-input" placeholder="ENTER YOUR UNIQUE ID CODE">
+            <button class="login-btn" onclick="processLogin()">Log In 🚀</button>
+
+            <div class="test-ids-box">
+                <strong>🔑 Testing IDs (Try typing one):</strong>
+                <ul style="margin-left: 18px; margin-top: 5px;">
+                    <li><strong>SVARNIT25</strong> (User: Svarnit)</li>
+                    <li><strong>YUVAAN10</strong> (User: Yuvaan)</li>
+                </ul>
+            </div>
         </div>
     </div>
 
-    <!-- Main Screens Content -->
-    <div class="main-container">
+
+    <!-- ==========================================
+         LAYER 2: MAIN DASHBOARD AND SIDEBAR APPLICATION
+         ========================================== -->
+    <div id="app-container">
         
-        <!-- DASHBOARD PAGE -->
-        <div id="dashboard" class="page-section active-page">
-            <div class="header">
-                <h2>Welcome to ClassPal!</h2>
-                <div class="badge">🛡️ 100% Kids Safe Zone</div>
+        <!-- Sidebar Navigation Layout -->
+        <div class="sidebar">
+            <div>
+                <div class="logo">ClassPal</div>
+                <div class="user-profile-badge" id="profileBadge">User: Guest</div>
+                
+                <div class="menu-item active" onclick="switchPage('dashboard', this)">Dashboard</div>
+                <div class="menu-item" onclick="alert('My Servers feature coming soon!')">My Servers</div>
+                <div class="menu-item" onclick="alert('Clan Teams feature coming soon!')">Clan Teams</div>
+                <div class="menu-item" id="dmTabButton" onclick="switchPage('direct-messages', this)">Direct Messages 💬</div>
+                <div class="menu-item" onclick="openFriendModal()">Add Friends (by ID) 🤝</div>
+                <div class="menu-item" onclick="alert('Safety Log tracking records are currently encrypted.')">Safety Log</div>
             </div>
-
-            <div class="grid">
-                <div class="card">
-                    <h3>💬 Text & Voice Chat</h3>
-                    <p>Connect safely with friends in custom servers and quick direct messages designed just for kids.</p>
-                </div>
-                <div class="card">
-                    <h3>🛡️ Smart Filter</h3>
-                    <p>Our automated systems instantly block bad words and harmful links to keep the community clean.</p>
-                </div>
-                <div class="card">
-                    <h3>🎮 Clan Teams</h3>
-                    <p>Create your own squad, invite classmates using your unique IDs, and play together safely.</p>
-                </div>
-            </div>
-
-            <div class="banner school-mode">
-                <h3>🏫 School Mode (Under 9 Years Old)</h3>
-                <p>When turned on by parents, this completely locks and blocks all Chatting and VC functionalities, leaving only educational and safe group tracking open.</p>
-                <button class="btn">Configure School Mode</button>
-            </div>
-
-            <div class="banner safety-strike">
-                <h3>⚠️ Safety Strike System (3-Chance Policy)</h3>
-                <p>ClassPal has zero tolerance for bad links or harmful language. Every account has exactly 3 chances.</p>
+            <div class="creators">
+                <strong>Created & Made By:</strong><br>
+                Svarnit Gupta &<br>Yuvaan Singh Parihar
             </div>
         </div>
 
-        <!-- DIRECT MESSAGES PAGE (THE NEW CHAT PANEL!) -->
-        <div id="direct-messages" class="page-section" style="padding:0;">
-            <div class="chat-container">
-                <div class="chat-header">🌐 Global Kids Sandbox Chat</div>
-                <div class="chat-messages" id="chatBox">
-                    <div class="msg incoming"><strong>Yuvaan:</strong> Yo Svarnit! The layout looks clean! Did the hosting link work? 🤔</div>
-                    <div class="msg outgoing"><strong>You:</strong> Yes!! We successfully deleted the CNAME file and bypassed the Wix error! 🚀</div>
-                    <div class="msg incoming"><strong>Yuvaan:</strong> Awesome! Try typing a message in the input below to test the active panel grid.</div>
+        <!-- Main Window Pane Views -->
+        <div class="main-content-pane">
+            
+            <!-- HOME DASHBOARD VIEW -->
+            <div id="dashboard" class="page-section active-page">
+                <div class="header">
+                    <h2>Welcome to ClassPal Dashboard!</h2>
+                    <div class="status-container">
+                        <div class="badge school-badge" id="schoolBadgeUI">🔒 School Mode Active</div>
+                        <div class="badge">🛡️ 100% Kids Safe Zone</div>
+                    </div>
                 </div>
-                <div class="chat-input-area">
-                    <input type="text" id="messageInput" class="chat-input" placeholder="Type a message here to test the live filter..." onkeypress="handleKeyPress(event)">
-                    <button class="send-btn" onclick="sendMessage()">Send</button>
+
+                <div class="grid">
+                    <div class="card">
+                        <h3>💬 Text & Voice Chat</h3>
+                        <p>Connect safely with friends in custom servers and quick direct messages designed just for kids.</p>
+                    </div>
+                    <div class="card">
+                        <h3>🛡️ Smart Filter</h3>
+                        <p>Our automated systems instantly block bad words and harmful links to keep the community clean.</p>
+                    </div>
+                    <div class="card">
+                        <h3>🎮 Clan Teams</h3>
+                        <p>Create your own squad, invite classmates using your unique IDs, and play together safely.</p>
+                    </div>
+                </div>
+
+                <div class="banner school-mode">
+                    <h3>🏫 School Mode (Under 9 Years Old)</h3>
+                    <p>When turned on by parents, this completely locks and blocks all Chatting and DM systems, leaving only educational structural tools active.</p>
+                    <button class="action-btn" id="lockConfigBtn" onclick="openParentModal()">Configure School Mode</button>
+                </div>
+
+                <div class="banner safety-strike">
+                    <h3>⚠️ Safety Strike System (3-Chance Policy)</h3>
+                    <p>ClassPal has zero tolerance for bad links or harmful language. Every account has exactly 3 chances.</p>
                 </div>
             </div>
-        </div>
 
+            <!-- CHATBOX SCREEN SYSTEM (OPTION 1) -->
+            <div id="direct-messages" class="page-section" style="padding:0;">
+                <div class="chat-container">
+                    <div class="chat-header" id="chatTitle">🌐 Global Kids Sandbox Chat</div>
+                    <div class="chat-messages" id="chatBox">
+                        <div class="msg incoming"><strong id="chatPartner">Yuvaan:</strong> Yo! The new authentication layer looks secure! Did the login page open up? 🤔</div>
+                        <div class="msg outgoing"><strong>You:</strong> Yes!! The pre-coded tester IDs and automated modals are completely responsive! 🚀</div>
+                        <div class="msg incoming"><strong>System Notice:</strong> Welcome to the live grid channel panel sandbox framework.</div>
+                    </div>
+                    <div class="chat-input-area">
+                        <input type="text" id="messageInput" class="chat-input" placeholder="Type a message here to test the live workspace panel..." onkeypress="handleKeyPress(event)">
+                        <button class="send-btn" onclick="sendMessage()">Send</button>
+                    </div>
+                </div>
+            </div>
+
+        </div>
     </div>
 
-    <!-- Javascript Actions Configuration -->
+
+    <!-- ==========================================
+         LAYER 3: ANIMATED POP-UP MODALS SYSTEM
+         ========================================== -->
+
+    <!-- OPTION 2: ADD FRIEND POP-UP MODAL WINDOW -->
+    <div class="modal-overlay" id="friendModalOverlay">
+        <div class="modal-box">
+            <h3>Add Friend by ID 🤝</h3>
+            <p>Type your friend's secret developer unique code identification string below to send a network handshake request.</p>
+            <input type="text" id="friendIdInput" class="modal-input" placeholder="e.g. YUVAAN10, SVARNIT25">
+            <div class="modal-buttons">
+                <button class="m-btn cancel" onclick="closeFriendModal()">Cancel</button>
+                <button class="m-btn confirm" onclick="submitFriendRequest()">Send Request</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- OPTION 3: PARENT PASSWORD SECURITY LOCK MODAL -->
+    <div class="modal-overlay" id="parentModalOverlay">
+        <div class="modal-box">
+            <h3 id="parentModalTitle">Parental Control Lock 🔒</h3>
+            <p id="parentModalDesc">Enter your 4-digit Parent Master Configuration Security PIN code setup to change system operational rules.</p>
+            <input type="password" id="parentPinInput" class="modal-input" placeholder="ENTER 4-DIGIT PIN" maxlength="4">
+            <div class="modal-buttons">
+                <button class="m-btn cancel" onclick="closeParentModal()">Cancel</button>
+                <button class="m-btn confirm" id="parentConfirmBtn" onclick="submitParentAuth()">Authenticate PIN</button>
+            </div>
+        </div>
+    </div>
+
+
+    <!-- ==========================================
+         LAYER 4: BACKEND LOGIC JAVASCRIPT CORNER
+         ========================================== -->
     <script>
-        // System to switch tabs cleanly
+        // Global variables state storage Engine
+        let currentUser = "Guest";
+        let currentUserId = "";
+        let isSchoolModeActive = false;
+        const PARENT_PIN = "1234"; // Pre-configured Master Parent Pin code
+
+        // USER LOGINS DATABASE CONFIGURATION MATRIX
+        const userDatabase = {
+            "SVARNIT25": { name: "Svarnit", partner: "Yuvaan" },
+            "YUVAAN10":  { name: "Yuvaan", partner: "Svarnit" }
+        };
+
+        // Execution logic handling validation matching user keys
+        function processLogin() {
+            const rawInput = document.getElementById('userIdField').value.trim().toUpperCase();
+            
+            if (userDatabase[rawInput]) {
+                currentUser = userDatabase[rawInput].name;
+                currentUserId = rawInput;
+                
+                // Set Profile Header text matching the credentials
+                document.getElementById('profileBadge').innerText = `User: ${currentUser} (${currentUserId})`;
+                document.getElementById('chatTitle').innerText = `🌐 Chat Workspace Node: Connected as ${currentUser}`;
+                document.getElementById('chatPartner').innerText = `${userDatabase[rawInput].partner}:`;
+
+                // Switch UI Screens display grids instantly
+                document.getElementById('login-page').style.display = 'none';
+                document.getElementById('app-container').style.display = 'block';
+            } else {
+                alert("❌ INVALID ID CODE! Please use either 'SVARNIT25' or 'YUVAAN10' to test the interface framework.");
+            }
+        }
+
+        // Clean layout tab-switching navigator execution engine
         function switchPage(pageId, element) {
-            // Hide all pages
-            document.querySelectorAll('.page-section').forEach(page => {
-                page.classList.remove('active-page');
-            });
-            // Show selected page
+            // Check state restriction before navigating into communication pathways
+            if (pageId === 'direct-messages' && isSchoolModeActive) {
+                alert("🔒 RESTRICTED! School Mode is currently enabled by a parent. Chat networks are locked down safe.");
+                return;
+            }
+
+            document.querySelectorAll('.page-section').forEach(page => page.classList.remove('active-page'));
             document.getElementById(pageId).classList.add('active-page');
 
-            // Toggle Active Sidebar Buttons
-            document.querySelectorAll('.menu-item').forEach(item => {
-                item.classList.remove('active');
-            });
+            document.querySelectorAll('.menu-item').forEach(item => item.classList.remove('active'));
             element.classList.add('active');
         }
 
-        // Live Chat Message System
+        // OPTION 1: CHAT SEND ENGAGEMENT ENGINE
         function sendMessage() {
             const input = document.getElementById('messageInput');
             const chatBox = document.getElementById('chatBox');
             
             if (input.value.trim() !== "") {
-                // Create custom outgoing message div element
                 const newMsg = document.createElement('div');
                 newMsg.className = 'msg outgoing';
                 newMsg.innerHTML = `<strong>You:</strong> ${input.value}`;
                 
-                // Add to layout and auto-scroll down
                 chatBox.appendChild(newMsg);
                 chatBox.scrollTop = chatBox.scrollHeight;
-                
-                // Clear the entry field box
                 input.value = "";
             }
         }
 
-        // Trigger send button automatically when pressing keyboard Enter Key
         function handleKeyPress(event) {
-            if (event.key === "Enter") {
-                sendMessage();
+            if (event.key === "Enter") { sendMessage(); }
+        }
+
+        // OPTION 2: FRIEND MODAL CONTROL PANEL SYSTEM ACTIONS
+        function openFriendModal() { document.getElementById('friendModalOverlay').style.display = 'flex'; }
+        function closeFriendModal() { 
+            document.getElementById('friendModalOverlay').style.display = 'none'; 
+            document.getElementById('friendIdInput').value = "";
+        }
+        function submitFriendRequest() {
+            const targetId = document.getElementById('friendIdInput').value.trim().toUpperCase();
+            if (targetId === "") { alert("Please input an ID number."); return; }
+            
+            if (targetId === currentUserId) {
+                alert("🤖 System Feedback: You cannot send a request connection sync payload to yourself!");
+            } else {
+                alert(`✨ SUCCESS! Connection handshake invite dispatched cleanly to target ID node [${targetId}].`);
+                closeFriendModal();
+            }
+        }
+
+        // OPTION 3: PARENT SECURITY CONTROLS TOGGLE INTERACTION LAYERS
+        function openParentModal() {
+            const title = document.getElementById('parentModalTitle');
+            const desc = document.getElementById('parentModalDesc');
+            const btn = document.getElementById('parentConfirmBtn');
+
+            if (!isSchoolModeActive) {
+                title.innerText = "Activate School Mode 🔒";
+                desc.innerText = "Parents: Enter the 4-digit setup PIN to completely turn on security restrictions and lock chat tools. (Default Test PIN is 1234)";
+                btn.innerText = "Lock System App";
+            } else {
+                title.innerText = "Disable School Mode 🔓";
+                desc.innerText = "Parents: Enter the 4-digit code authorization matrix payload configuration settings to restore raw chat layouts.";
+                btn.innerText = "Unlock System App";
+            }
+            document.getElementById('parentModalOverlay').style.display = 'flex';
+        }
+
+        function closeParentModal() {
+            document.getElementById('parentModalOverlay').style.display = 'none';
+            document.getElementById('parentPinInput').value = "";
+        }
+
+        function submitParentAuth() {
+            const enteredPin = document.getElementById('parentPinInput').value;
+            
+            if (enteredPin === PARENT_PIN) {
+                // Toggle global condition boolean switch
+                isSchoolModeActive = !isSchoolModeActive;
+
+                const schoolBadge = document.getElementById('schoolBadgeUI');
+                const dmTab = document.getElementById('dmTabButton');
+                const lockBtn = document.getElementById('lockConfigBtn');
+
+                if (isSchoolModeActive) {
+                    schoolBadge.style.display = 'block';
+                    dmTab.classList.add('locked-menu-disable');
+                    lockBtn.innerText = "Disable School Mode Lock";
+                    lockBtn.style.color = "#dc4c64"; // Visually changes color matrix profile to red alert state
+                    
+                    // Force jump back onto the clean safe homepage interface instantly if sitting inside direct message panels
+                    switchPage('dashboard', document.querySelector('.menu-item'));
+                    alert("🏫 SCHOOL MODE SECTOR ON! Direct messaging pipelines have been blocked safely.");
+                } else {
+                    schoolBadge.style.display = 'none';
+                    dmTab.classList.remove('locked-menu-disable');
+                    lockBtn.innerText = "Configure School Mode";
+                    lockBtn.style.color = "#e4a11b";
+                    alert("🔓 ACCESS RESTORED! Parental override detected. Chat options functional.");
+                }
+                closeParentModal();
+            } else {
+                alert("❌ ACCESS DENIED! Incorrect parental verification parameters provided. Modification rejected.");
             }
         }
     </script>
