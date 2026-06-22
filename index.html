@@ -45,13 +45,25 @@
 
         /* --- DASHBOARD ELEMENTS --- */
         .grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(240px, 1fr)); gap: 20px; margin-bottom: 25px; }
-        .card { background: white; padding: 20px; border-radius: 12px; box-shadow: 0 4px 6px rgba(0,0,0,0.03); border: 1px solid #e2e8f0; }
+        .card { background: white; padding: 20px; border-radius: 12px; box-shadow: 0 4px 6px rgba(0,0,0,0.03); border: 1px solid #e2e8f0; position: relative; }
         .card h3 { margin-bottom: 8px; color: #2a5298; font-size: 18px; }
         .banner { padding: 20px; border-radius: 12px; color: white; margin-bottom: 20px; }
         .school-mode { background-color: #e4a11b; }
         .safety-strike { background-color: #dc4c64; }
         .action-btn { background: white; color: #e4a11b; border: none; padding: 10px 18px; border-radius: 6px; font-weight: bold; margin-top: 12px; cursor: pointer; }
         .action-btn.blue-btn { background: #3b71ca; color: white; margin-top: 0; }
+        .action-btn.server-enter-btn { background: #3b71ca; color: white; width: 100%; padding: 8px; font-size: 13px; }
+
+        /* --- DISCORD SERVER WORKSPACE ENGINE UI --- */
+        .server-room-layout { display: flex; height: calc(100vh - 180px); background: white; border-radius: 12px; box-shadow: 0 4px 12px rgba(0,0,0,0.05); overflow: hidden; border: 1px solid #cbd5e1; }
+        .server-chat-pane { flex: 1; display: flex; flex-direction: column; background: #fafafa; }
+        .server-sidebar-pane { width: 260px; background: #f1f5f9; border-left: 1px solid #cbd5e1; display: flex; flex-direction: column; padding: 15px; gap: 15px; }
+        .server-sidebar-pane h4 { font-size: 13px; text-transform: uppercase; color: #475569; letter-spacing: 0.5px; border-bottom: 1px solid #cbd5e1; padding-bottom: 5px; }
+        .roster-list { list-style: none; display: flex; flex-direction: column; gap: 6px; overflow-y: auto; flex: 1; }
+        .roster-item { display: flex; justify-content: space-between; align-items: center; font-size: 14px; font-weight: 500; background: white; padding: 6px 10px; border-radius: 6px; border: 1px solid #e2e8f0; }
+        .ban-mini-btn { background: #dc4c64; color: white; border: none; padding: 2px 6px; font-size: 11px; border-radius: 4px; cursor: pointer; font-weight: bold; }
+        .ban-mini-btn:hover { background: #b3394b; }
+        .server-select-dropdown { width: 100%; padding: 8px; border: 1px solid #cbd5e1; border-radius: 6px; outline: none; margin-bottom: 8px; font-size: 13px; }
 
         /* --- SPLIT ARCHITECTURE DIRECT MESSAGES --- */
         .dm-layout { display: flex; height: calc(100vh - 40px); margin: 20px; background: white; border-radius: 12px; box-shadow: 0 4px 12px rgba(0,0,0,0.05); overflow: hidden; }
@@ -114,11 +126,7 @@
 </head>
 <body>
 
-    <!-- ==========================================
-         LAYER 1: GATEWAY SIGN IN & SIGN UP PANELS
-         ========================================== -->
     <div id="login-page">
-        <!-- Login Card Form Wrapper -->
         <div class="login-card" id="authLoginForm">
             <div class="login-logo">ClassPal</div>
             <div class="login-subtitle">🛡️ Safe Infrastructure Workspace Platform</div>
@@ -137,7 +145,6 @@
             </div>
         </div>
 
-        <!-- Registration Card Form Wrapper -->
         <div class="login-card" id="authRegisterForm" style="display:none;">
             <div class="login-logo">ClassPal</div>
             <div class="login-subtitle">✨ Provision a New Secure Account Core Node</div>
@@ -155,12 +162,8 @@
     </div>
 
 
-    <!-- ==========================================
-         LAYER 2: CENTRAL SUITE RUNTIME APP ENVIRONMENT
-         ========================================== -->
     <div id="app-container">
         
-        <!-- Sidebar Shell View Components -->
         <div class="sidebar">
             <div>
                 <div class="logo">ClassPal</div>
@@ -184,7 +187,6 @@
 
         <div class="main-content-pane">
             
-            <!-- VIEW 1: GENERAL CENTRAL HOME ENGINE -->
             <div id="dashboard" class="page-section active-page">
                 <div class="header">
                     <h2>Welcome to ClassPal Hub Dashboard!</h2>
@@ -219,18 +221,54 @@
                 </div>
             </div>
 
-            <!-- VIEW 2: SERVER HUB ARCHITECTURE -->
             <div id="my-servers" class="page-section">
-                <div class="header">
-                    <h2>Safe Game Infrastructure Servers 🌐</h2>
-                    <button class="action-btn blue-btn" onclick="openServerModal()">+ Provision New Server Instance</button>
+                <div id="serversBrowserListContainer">
+                    <div class="header">
+                        <h2>Safe Game Infrastructure Servers 🌐</h2>
+                        <button class="action-btn blue-btn" onclick="openServerModal()">+ Provision New Server Instance</button>
+                    </div>
+                    <div class="grid" id="serversContainerGrid">
+                        </div>
                 </div>
-                <div class="grid" id="serversContainerGrid">
-                    <!-- Loaded dynamically via runtime engines -->
+
+                <div id="activeServerRoomWorkspace" style="display:none; height:100%;">
+                    <div class="header" style="margin-bottom: 15px;">
+                        <div>
+                            <h2 id="activeServerHeaderTitle">🌐 Loading Server Container...</h2>
+                            <p id="activeServerMetaSubtitle" style="font-size:12px; color:#64748b; margin-top:2px;">Owner Node: Loading...</p>
+                        </div>
+                        <button class="btn-action decline" onclick="exitActiveServerView()">⬅️ Leave Server Display View</button>
+                    </div>
+
+                    <div class="server-room-layout">
+                        <div class="server-chat-pane">
+                            <div class="chat-messages" id="serverChatMessagesContainer">
+                                </div>
+                            <div class="chat-input-area">
+                                <input type="text" id="serverChatMessageInputField" class="chat-input" placeholder="Send a clean, filtered message to the server channel..." onkeypress="handleServerChatKeyPress(event)">
+                                <button class="send-btn" onclick="transmitServerChatMessage()">Transmit</button>
+                            </div>
+                        </div>
+
+                        <div class="server-sidebar-pane">
+                            <div>
+                                <h4>🤝 Invite Friends</h4>
+                                <p style="font-size:11px; color:#64748b; margin:4px 0 8px 0;">Select an active classmate to grant access:</p>
+                                <select id="serverInviteFriendSelector" class="server-select-dropdown">
+                                    </select>
+                                <button class="btn-action accept" style="width:100%;" onclick="executeServerFriendInvite()">Send Server Access Link</button>
+                            </div>
+
+                            <div style="flex:1; display:flex; flex-direction:column;">
+                                <h4>👥 Server Members Roster</h4>
+                                <ul class="roster-list" id="serverRosterDataContainer" style="margin-top:10px;">
+                                    </ul>
+                            </div>
+                        </div>
+                    </div>
                 </div>
             </div>
 
-            <!-- VIEW 3: CLAN SECTOR CONTROL SYSTEM -->
             <div id="clan-teams" class="page-section">
                 <div class="header">
                     <h2>Clan Teams Grid Controls 🎮</h2>
@@ -250,36 +288,29 @@
                     <div class="card">
                         <h3>My Current Registered Clan Member Roster</h3>
                         <ul id="clanRosterContainer" style="margin-left:20px; margin-top:10px; line-height:1.8;">
-                            <!-- Dynamically managed list entries -->
-                        </ul>
+                            </ul>
                     </div>
                 </div>
                 <div style="margin-top:20px;">
                     <h3>Pending Incoming Clan Handshake Invitations</h3>
                     <div class="request-card-list" id="incomingClanRequestsContainer">
-                        <!-- Loaded programmatically -->
-                    </div>
+                        </div>
                 </div>
             </div>
 
-            <!-- VIEW 4: SEPARATED PRIVATE DIRECT MESSAGES CHANNELS -->
             <div id="direct-messages" class="page-section" style="padding:0;">
                 <div class="dm-layout">
-                    <!-- Left Sidebar thread navigator -->
                     <div class="dm-sidebar">
                         <div class="dm-sidebar-header">Active Friends List</div>
                         <div id="dmThreadsListWrapper" style="overflow-y:auto; flex:1;">
-                            <!-- Thread cards generated via dynamic arrays -->
-                        </div>
+                            </div>
                     </div>
-                    <!-- Right Messaging Body Panel Wrapper -->
                     <div class="dm-window" id="dmChatBodyPanel">
                         <div class="no-chat-selected" id="noChatWarningPlaceholder">
                             <span>💬</span>
                             <p>Select a verified contact on the left directory to initialize safe communication channels.</p>
                         </div>
                         <div id="activeChatFrameContainer" style="display:none; flex-direction:column; height:100%;">
-                            <!-- VOICE STREAMING BAR PANEL OVERLAY -->
                             <div class="voice-channel-bar" id="voiceChannelStreamingBar">
                                 <div class="v-indicator">
                                     <div class="pulse-dot"></div>
@@ -295,8 +326,7 @@
                                 <button class="btn-action accept" style="padding:4px 10px;" onclick="initializeVoiceHandshake()">📞 Connect Voice Stream</button>
                             </div>
                             <div class="chat-messages" id="dmMessagesBox">
-                                <!-- Stream loaded iteratively per target user schema keys -->
-                            </div>
+                                </div>
                             <div class="chat-input-area">
                                 <input type="text" id="dmMessageInput" class="chat-input" placeholder="Compose filtered message text sequence..." onkeypress="handleDmKeyPress(event)">
                                 <button class="send-btn" onclick="sendPrivateChatMessage()">Transmit</button>
@@ -306,7 +336,6 @@
                 </div>
             </div>
 
-            <!-- VIEW 5: FRIENDS DIRECTORY INVITE LISTINGS -->
             <div id="add-friends-view" class="page-section">
                 <div class="header">
                     <h2>Manage Relationship Matrix Handshakes 🤝</h2>
@@ -322,12 +351,10 @@
                 <div>
                     <h3>Pending Connection Handshake Operations</h3>
                     <div class="request-card-list" id="incomingFriendRequestsContainer">
-                        <!-- Filled dynamically -->
-                    </div>
+                        </div>
                 </div>
             </div>
 
-            <!-- VIEW 6: LIVE AUDIT RUNTIME TELEMETRY LOGS -->
             <div id="safety-log" class="page-section">
                 <div class="header">
                     <h2>Security Operations Terminal Registry 📜</h2>
@@ -336,7 +363,6 @@
                 <div class="log-terminal" id="safetyLogTerminal"></div>
             </div>
 
-            <!-- VIEW 7: ABOUT METADATA SUMMARY -->
             <div id="about-section" class="page-section">
                 <div class="header">
                     <h2>About ClassPal Core Framework ℹ️</h2>
@@ -355,11 +381,6 @@
         </div>
     </div>
 
-    <!-- ==========================================
-         LAYER 3: MODAL DECORATOR CONFIGURATION WRAPPERS
-         ========================================== -->
-    
-    <!-- SYSTEM PARENT CONTROL MATRIX MODAL -->
     <div class="modal-overlay" id="parentModalOverlay">
         <div class="modal-box">
             <h3>Parental Security Controls 🔒</h3>
@@ -372,7 +393,6 @@
                 <button class="login-btn" style="margin-top:6px; padding:6px; font-size:12px; background:#e4a11b;" onclick="executeParentPasswordChange()">Force Update Password</button>
             </div>
 
-            <!-- --- NEW ACCOUNT DELETION BLOCK INTERFACE --- -->
             <div style="background:#fee2e2; padding:12px; border-radius:8px; margin-bottom:15px; text-align:left; border: 1px solid #fca5a5; display:none;" id="parentDeleteAccountBox">
                 <label style="font-size:11px; font-weight:bold; color:#991b1b; display:block; margin-bottom:4px;">PERMANENTLY DELETE ACCOUNT NODE:</label>
                 <p style="font-size:11px; color:#7f1d1d; margin-bottom:8px;">This will completely purge this profile, remove all peer data links, and dissolve owned clans. This action is irreversible.</p>
@@ -386,7 +406,6 @@
         </div>
     </div>
 
-    <!-- GENERIC INSTANCE BUILDER MODAL -->
     <div class="modal-overlay" id="serverModalOverlay">
         <div class="modal-box">
             <h3>Build New Infrastructure Server Node 🌐</h3>
@@ -400,19 +419,14 @@
     </div>
 
 
-    <!-- ==========================================
-         LAYER 4: ACTIVE JAVASCRIPT LOCALDATABASE ROUTINES
-         ========================================== -->
     <script>
-        // Dictionary block validation array listings
         const FILTER_DICTIONARY = ["STUPID", "DUMMY", "HATE", "TRASH", "FOOL", "SHUTUP"];
 
-        // Runtime global session state parameters
         let sessionUser = null;
         let activeChatRecipient = null;
+        let activeServerId = null; // Tracking global pointer for open discord room view
         let isVoiceMuted = false;
 
-        // Initialization configuration database wrapper mapping defaults
         function initializeDatabaseSchema() {
             if (!localStorage.getItem('cp_users')) {
                 const prebuiltUsers = {
@@ -430,18 +444,16 @@
             }
             if (!localStorage.getItem('cp_servers')) {
                 const defaultServers = [
-                    { name: "🧱 Minecraft Builders Crew", owner: "SYSTEM", desc: "Official layout division sandbox channel." },
-                    { name: "⚡ Pokemon Battle Arena", owner: "SYSTEM", desc: "Card processing trades and challenge discussions." }
+                    { id: "SRV_DEFAULT_MC", name: "🧱 Minecraft Builders Crew", owner: "SYSTEM", desc: "Official layout division sandbox channel.", members: ["SVARNIT25", "YUVAAN10"], banned: [] },
+                    { id: "SRV_DEFAULT_POKE", name: "⚡ Pokemon Battle Arena", owner: "SYSTEM", desc: "Card processing trades and challenge discussions.", members: ["SVARNIT25", "YUVAAN10"], banned: [] }
                 ];
                 localStorage.setItem('cp_servers', JSON.stringify(defaultServers));
             }
         }
 
-        // Database Getter and Setter shorthand utils
         function dbGet(key) { return JSON.parse(localStorage.getItem(key)); }
         function dbSet(key, obj) { localStorage.setItem(key, JSON.stringify(obj)); }
 
-        // Trace terminal runtime printing engine
         function printTelemetry(text, variant = "info") {
             const terminal = document.getElementById('safetyLogTerminal');
             if (!terminal) return;
@@ -455,13 +467,11 @@
             terminal.scrollTop = terminal.scrollHeight;
         }
 
-        // Sign In / Sign Up Card views state controller toggle switch
         function toggleAuthForms(showRegister) {
             document.getElementById('authLoginForm').style.display = showRegister ? 'none' : 'block';
             document.getElementById('authRegisterForm').style.display = showRegister ? 'block' : 'none';
         }
 
-        // Account sign in validation sequence matches
         function executeLogin() {
             const idField = document.getElementById('loginIdInput').value.trim().toUpperCase();
             const passField = document.getElementById('loginPassInput').value.trim();
@@ -477,7 +487,6 @@
             }
         }
 
-        // Account registration pipeline compilation mapping entries
         function executeRegistration() {
             const id = document.getElementById('regIdInput').value.trim().toUpperCase();
             const name = document.getElementById('regNameInput').value.trim();
@@ -495,17 +504,16 @@
             toggleAuthForms(false);
         }
 
-        // Standard App Activation Engine Complete implementation 
         function bootApplicationSuite() {
             document.getElementById('login-page').style.display = 'none';
             document.getElementById('app-container').style.display = 'block';
             
-            // Re-sync local variable session state straight from localized database logs
             const users = dbGet('cp_users');
             sessionUser = users[sessionUser.id];
 
             document.getElementById('profileBadge').innerText = `${sessionUser.name} [ID: ${sessionUser.id}]`;
             
+            exitActiveServerView(); // Resets layout views safely
             updateSecurityBanners();
             renderServersGrid();
             renderClanWorkspace();
@@ -515,7 +523,6 @@
             printTelemetry(`User context workspace initiated for node: ${sessionUser.id}`, "good");
         }
 
-        // Synchronize and render user validation badges and restriction locks
         function updateSecurityBanners() {
             document.getElementById('strikeBadgeUI').innerText = `Strikes: ${sessionUser.strikes} / 3`;
             
@@ -538,7 +545,6 @@
             }
         }
 
-        // Core App Window Router Routing Function
         function switchPage(pageId, navElement) {
             if (sessionUser && sessionUser.schoolMode) {
                 if (pageId === 'my-servers' || pageId === 'clan-teams' || pageId === 'direct-messages') {
@@ -552,6 +558,10 @@
             
             document.getElementById(pageId).classList.add('active-page');
             navElement.classList.add('active');
+            
+            if(pageId === 'my-servers') {
+                exitActiveServerView();
+            }
             
             printTelemetry(`Switched visual route container view to: ${pageId}`);
         }
@@ -604,7 +614,6 @@
             document.getElementById('parentNewUserPasswordInput').value = '';
         }
 
-        /* --- ACCOUNT DELETION RECOVERY PIPELINE --- */
         function executeAccountDeletion() {
             const confirmPurge = confirm("⚠️ CRITICAL WARNING:\nAre you absolutely certain you want to permanently delete this account? All personal configs, relationship vectors, and safety records will be destroyed instantly.");
             if (!confirmPurge) return;
@@ -612,42 +621,43 @@
             const targetId = sessionUser.id;
             const users = dbGet('cp_users');
             const clans = dbGet('cp_clans');
+            const servers = dbGet('cp_servers');
             let friendReqs = dbGet('cp_friend_reqs');
             let clanReqs = dbGet('cp_clan_reqs');
 
-            // 1. Remove user mapping link references from all secondary user friends arrays
             for (let uId in users) {
                 if (users[uId].friends) {
                     users[uId].friends = users[uId].friends.filter(f => f !== targetId);
                 }
             }
 
-            // 2. Clear out or dissolve assigned clan infrastructure blocks
             const assignedClan = users[targetId].clan;
             if (assignedClan && clans[assignedClan]) {
                 const clanInstance = clans[assignedClan];
                 if (clanInstance.owner === targetId) {
-                    // Owner is leaving: dissolve completely and sever existing group entries
                     clanInstance.members.forEach(mId => {
                         if (users[mId]) users[mId].clan = "";
                     });
                     delete clans[assignedClan];
                 } else {
-                    // Normal member leaving: remove from target roster array list
                     clanInstance.members = clanInstance.members.filter(m => m !== targetId);
                 }
             }
 
-            // 3. Purge operational handshake requests from outstanding lists
+            // Scrub references inside custom game infrastructure servers
+            servers.forEach(srv => {
+                if (srv.members) srv.members = srv.members.filter(m => m !== targetId);
+                if (srv.banned) srv.banned = srv.banned.filter(b => b !== targetId);
+            });
+
             friendReqs = friendReqs.filter(r => r.from !== targetId && r.to !== targetId);
             clanReqs = clanReqs.filter(r => r.fromUser !== targetId && r.toUser !== targetId && r.fromClan !== assignedClan);
 
-            // 4. Wipe user object node entirely from database matrix
             delete users[targetId];
 
-            // 5. Update local storage caches
             dbSet('cp_users', users);
             dbSet('cp_clans', clans);
+            dbSet('cp_servers', servers);
             dbSet('cp_friend_reqs', friendReqs);
             dbSet('cp_clan_reqs', clanReqs);
 
@@ -656,7 +666,7 @@
             executeLogout();
         }
 
-        /* --- SERVER ARCHITECTURE ENGINE SUBROUTINES --- */
+        /* --- DISCORD ENGINE COMPONENT LAYER SUBROUTINES --- */
         function openServerModal() {
             if (sessionUser.schoolMode) return;
             document.getElementById('serverModalOverlay').style.display = 'flex';
@@ -672,32 +682,274 @@
             if (!name) { alert("Please input a valid configuration identifier label."); return; }
             
             const servers = dbGet('cp_servers');
+            const uniqueSrvId = "SRV_" + Date.now();
+            
             servers.push({
+                id: uniqueSrvId,
                 name: `🌐 ${name}`,
                 owner: sessionUser.id,
-                desc: `Custom user-provisioned sandboxed sandbox block node created by ${sessionUser.name}.`
+                desc: `Custom sandbox cluster created by ${sessionUser.name}.`,
+                members: [sessionUser.id], // Owner added directly as member node 0
+                banned: []
             });
+            
             dbSet('cp_servers', servers);
             closeServerModal();
             renderServersGrid();
-            printTelemetry(`Instantiated new isolated community channel cluster: ${name}`, "good");
+            printTelemetry(`Instantiated new isolated Discord cluster framework: ${name} [ID: ${uniqueSrvId}]`, "good");
         }
 
         function renderServersGrid() {
             const grid = document.getElementById('serversContainerGrid');
+            if(!grid) return;
             grid.innerHTML = '';
             const servers = dbGet('cp_servers');
             
             servers.forEach(srv => {
+                // DISCORD RULE MAPPING: Hide infrastructure block if current session entity is blacklisted/banned
+                if (srv.banned && srv.banned.includes(sessionUser.id)) return;
+
+                const isJoined = srv.members && srv.members.includes(sessionUser.id);
+
                 const card = document.createElement('div');
                 card.className = 'card';
                 card.innerHTML = `
                     <h3>${srv.name}</h3>
                     <p>${srv.desc}</p>
-                    <span style="font-size:11px; color:#94a3b8; display:block; margin-top:10px;">Manager Node: ${srv.owner}</span>
+                    <span style="font-size:11px; color:#94a3b8; display:block; margin: 8px 0;">Manager Node: ${srv.owner}</span>
+                    <button class="action-btn server-enter-btn" onclick="tryAccessServer('${srv.id}')">
+                        ${isJoined ? 'Enter Channel 🚀' : 'Join Server Vector ✨'}
+                    </button>
                 `;
                 grid.appendChild(card);
             });
+        }
+
+        function tryAccessServer(serverId) {
+            const servers = dbGet('cp_servers');
+            const targetSrv = servers.find(s => s.id === serverId);
+            if (!targetSrv) { alert("Server network routing context lost."); return; }
+
+            if (targetSrv.banned && targetSrv.banned.includes(sessionUser.id)) {
+                alert("⛔ ACCESS REJECTED: You have been permanently banned from entering this server matrix.");
+                return;
+            }
+
+            // Auto-join if clicking for the first time
+            if (!targetSrv.members.includes(sessionUser.id)) {
+                targetSrv.members.push(sessionUser.id);
+                dbSet('cp_servers', servers);
+                printTelemetry(`Profile entry log merged into infrastructure stack: ${targetSrv.name}`, "good");
+            }
+
+            launchActiveServerRoom(targetSrv);
+        }
+
+        function launchActiveServerRoom(serverObj) {
+            activeServerId = serverObj.id;
+            
+            document.getElementById('serversBrowserListContainer').style.display = 'none';
+            document.getElementById('activeServerRoomWorkspace').style.display = 'block';
+            
+            document.getElementById('activeServerHeaderTitle').innerText = serverObj.name;
+            document.getElementById('activeServerMetaSubtitle').innerText = `Unique Zone ID: ${serverObj.id} | Server Founder Node: ${serverObj.owner}`;
+            
+            syncServerUIElements();
+            printTelemetry(`Connected chat socket pipeline interface link to room container [${serverObj.id}]`);
+        }
+
+        function exitActiveServerView() {
+            activeServerId = null;
+            const workspace = document.getElementById('activeServerRoomWorkspace');
+            const listContainer = document.getElementById('serversBrowserListContainer');
+            if (workspace) workspace.style.display = 'none';
+            if (listContainer) listContainer.style.display = 'block';
+            renderServersGrid();
+        }
+
+        function syncServerUIElements() {
+            if (!activeServerId) return;
+            
+            const servers = dbGet('cp_servers');
+            const srv = servers.find(s => s.id === activeServerId);
+            if (!srv) { exitActiveServerView(); return; }
+
+            // 1. Core Chat Room History Loader
+            const msgBox = document.getElementById('serverChatMessagesContainer');
+            msgBox.innerHTML = '';
+            
+            const chats = dbGet('cp_chats');
+            const serverChatLogKey = `SERVER_${srv.id}`;
+            const stream = chats[serverChatLogKey] || [];
+            
+            stream.forEach(m => {
+                const item = document.createElement('div');
+                if (m.type === 'sys') {
+                    item.className = 'msg sys-alert';
+                    item.innerText = m.txt;
+                } else {
+                    item.className = m.sender === sessionUser.id ? 'msg outgoing' : 'msg incoming';
+                    item.innerHTML = `<strong style="font-size:11px; display:block; opacity:0.8; margin-bottom:2px;">${m.senderName} (${m.sender})</strong>${m.txt}`;
+                }
+                msgBox.appendChild(item);
+            });
+            msgBox.scrollTop = msgBox.scrollHeight;
+
+            // 2. Member Roster Management Compiler (with Discord-Style Eviction Controls)
+            const rosterContainer = document.getElementById('serverRosterDataContainer');
+            rosterContainer.innerHTML = '';
+            
+            srv.members.forEach(mId => {
+                const li = document.createElement('li');
+                li.className = 'roster-item';
+                
+                let appendControlsHTML = '';
+                // Rule Checklist: Show absolute Ban triggers if current session user owns this cluster & player target isn't himself
+                if (sessionUser.id === srv.owner && mId !== sessionUser.id) {
+                    appendControlsHTML = `<button class="ban-mini-btn" onclick="executeServerBanOperation('${mId}')">Ban 🚫</button>`;
+                }
+                
+                li.innerHTML = `
+                    <span>👤 <strong>${mId}</strong> ${mId === srv.owner ? '<b style="color:#e4a11b;">[OWNER]</b>' : ''}</span>
+                    ${appendControlsHTML}
+                `;
+                rosterContainer.appendChild(li);
+            });
+
+            // 3. Dropdown Selection Sync for Non-Member Friends list
+            const dropdown = document.getElementById('serverInviteFriendSelector');
+            dropdown.innerHTML = '';
+            
+            let inviteCount = 0;
+            sessionUser.friends.forEach(fId => {
+                if (!srv.members.includes(fId) && !srv.banned.includes(fId)) {
+                    const opt = document.createElement('option');
+                    opt.value = fId;
+                    opt.innerText = fId;
+                    dropdown.appendChild(opt);
+                    inviteCount++;
+                }
+            });
+
+            if(inviteCount === 0) {
+                dropdown.innerHTML = `<option value="">No friends available to add</option>`;
+            }
+        }
+
+        function executeServerFriendInvite() {
+            const dropdown = document.getElementById('serverInviteFriendSelector');
+            const selectedFriendId = dropdown.value;
+            
+            if (!selectedFriendId) { alert("Please establish a valid friend target connection endpoint signature first."); return; }
+            
+            const servers = dbGet('cp_servers');
+            const srvIdx = servers.findIndex(s => s.id === activeServerId);
+            
+            if (srvIdx > -1) {
+                servers[srvIdx].members.push(selectedFriendId);
+                dbSet('cp_servers', servers);
+                
+                // Track dynamic join system event notices directly into chat feed object mapping arrays
+                const chats = dbGet('cp_chats');
+                const serverChatLogKey = `SERVER_${activeServerId}`;
+                if (!chats[serverChatLogKey]) chats[serverChatLogKey] = [];
+                
+                chats[serverChatLogKey].push({
+                    type: 'sys',
+                    txt: `✨ SYSTEM NOTICE: User node [${selectedFriendId}] entered the channel matrix layer.`
+                });
+                dbSet('cp_chats', chats);
+
+                printTelemetry(`Dispatched access permit key to user [${selectedFriendId}] into cluster node [${activeServerId}]`, "good");
+                syncServerUIElements();
+            }
+        }
+
+        function executeServerBanOperation(targetMemberId) {
+            const verification = confirm(`🔨 DISCORD ADMINISTRATIVE PROTOCOL:\nAre you absolutely sure you want to enforce a permanent blacklist ban on user node [${targetMemberId}]? They will be dropped and restricted indefinitely.`);
+            if (!verification) return;
+
+            const servers = dbGet('cp_servers');
+            const srvIdx = servers.findIndex(s => s.id === activeServerId);
+            
+            if (srvIdx > -1) {
+                // Drop out of membership mapping registry indexes
+                servers[srvIdx].members = servers[srvIdx].members.filter(m => m !== targetMemberId);
+                
+                // Add tracking elements securely directly inside localized blacklist arrays
+                if (!servers[srvIdx].banned) servers[srvIdx].banned = [];
+                servers[srvIdx].banned.push(targetMemberId);
+                
+                dbSet('cp_servers', servers);
+
+                const chats = dbGet('cp_chats');
+                const serverChatLogKey = `SERVER_${activeServerId}`;
+                if (!chats[serverChatLogKey]) chats[serverChatLogKey] = [];
+                
+                chats[serverChatLogKey].push({
+                    type: 'sys',
+                    txt: `🚫 SECURITY OVERRIDE INTERVENTION: User node [${targetMemberId}] was officially BANNED and scrubbed by the server owner.`
+                });
+                dbSet('cp_chats', chats);
+
+                printTelemetry(`Administrative execution block registered. Blacklisted entity user profile: ${targetMemberId}`, "error");
+                syncServerUIElements();
+            }
+        }
+
+        function transmitServerChatMessage() {
+            const input = document.getElementById('serverChatMessageInputField');
+            const textContent = input.value.trim();
+            if (!textContent || !activeServerId) return;
+
+            const chats = dbGet('cp_chats');
+            const serverChatLogKey = `SERVER_${activeServerId}`;
+            if (!chats[serverChatLogKey]) chats[serverChatLogKey] = [];
+
+            const isUnsafe = checkContentSafety(textContent);
+
+            if (isUnsafe) {
+                const users = dbGet('cp_users');
+                users[sessionUser.id].strikes += 1;
+                
+                printTelemetry(`[SERVER INFRASTRUCTURE HIT] Content scrub filter deployment match on: ${sessionUser.id}. Scrubbed data: "${textContent}"`, "error");
+                
+                chats[serverChatLogKey].push({
+                    type: 'sys',
+                    txt: `⚠️ SECURITY PROTOCOL INTERVENTION: A transmission packet from ${sessionUser.name} was scrubbed due to dictionary matching infraction rules.`
+                });
+                
+                if (users[sessionUser.id].strikes >= 3) {
+                    printTelemetry(`🔒 CRITICAL SECURITY LOCKOUT: Account node ${sessionUser.id} exceeded fault limits inside server channels.`, "error");
+                    alert("🚨 ACCOUNT LOCKED DOWN: This profile node has triggered 3 dictionary block strikes. Session closed.");
+                    dbSet('cp_users', users);
+                    dbSet('cp_chats', chats);
+                    executeLogout();
+                    return;
+                } else {
+                    alert(`⚠️ AUTOMATED WORD FILTER ALERT:\nYour message matches words flagged in our secure dictionary database. Strike logged (${users[sessionUser.id].strikes}/3).`);
+                }
+                
+                dbSet('cp_users', users);
+                sessionUser = users[sessionUser.id];
+                updateSecurityBanners();
+            } else {
+                chats[serverChatLogKey].push({
+                    sender: sessionUser.id,
+                    senderName: sessionUser.name,
+                    type: 'chat',
+                    txt: textContent
+                });
+                printTelemetry(`Server message array block passed into tracking cluster socket stream: ${serverChatLogKey}`);
+            }
+
+            dbSet('cp_chats', chats);
+            input.value = '';
+            syncServerUIElements();
+        }
+
+        function handleServerChatKeyPress(e) {
+            if (e.key === 'Enter') transmitServerChatMessage();
         }
 
         /* --- CLAN ALLIANCE SYSTEM OPERATIONS --- */
@@ -744,6 +996,7 @@
 
         function renderClanWorkspace() {
             const roster = document.getElementById('clanRosterContainer');
+            if(!roster) return;
             roster.innerHTML = '';
             const clans = dbGet('cp_clans');
             const currentClanName = sessionUser.clan;
@@ -846,6 +1099,7 @@
 
         function renderFriendRequests() {
             const reqsContainer = document.getElementById('incomingFriendRequestsContainer');
+            if(!reqsContainer) return;
             reqsContainer.innerHTML = '';
             
             const allReqs = dbGet('cp_friend_reqs');
@@ -955,6 +1209,7 @@
 
         function loadChatMessagesStream() {
             const msgBox = document.getElementById('dmMessagesBox');
+            if(!msgBox) return;
             msgBox.innerHTML = '';
             
             const key = getChatKey();
@@ -1066,18 +1321,17 @@
             printTelemetry("Audio multiplexer link safely disconnected.");
         }
 
-        /* --- TERMINATE SESSION SYSTEM DISCONNECT --- */
         function executeLogout() {
             printTelemetry(`User session state unlinked for context tracking node: ${sessionUser ? sessionUser.id : 'UNKNOWN'}`);
             sessionUser = null;
             activeChatRecipient = null;
+            activeServerId = null;
             document.getElementById('loginIdInput').value = '';
             document.getElementById('loginPassInput').value = '';
             document.getElementById('app-container').style.display = 'none';
             document.getElementById('login-page').style.display = 'flex';
         }
 
-        // Window self-initialization hook
         window.onload = function() {
             initializeDatabaseSchema();
             printTelemetry("System Core Runtime Subsystem fully initialized. Awaiting secure credential verification validation.");
