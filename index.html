@@ -98,7 +98,7 @@
         .log-line.good { color: #4ade80; }
         
         .modal-overlay { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0, 0, 0, 0.6); display: none; align-items: center; justify-content: center; z-index: 1000; }
-        .modal-box { background: white; padding: 25px; border-radius: 14px; width: 90%; max-width: 400px; text-align: center; box-shadow: 0 10px 25px rgba(0,0,0,0.3); }
+        .modal-box { background: white; padding: 25px; border-radius: 14px; width: 90%; max-width: 400px; text-align: center; box-shadow: 0 10px 25px rgba(0,0,0,0.3); max-height: 90vh; overflow-y: auto; }
         .modal-box h3 { margin-bottom: 10px; color: #2a5298; }
         .modal-box p { font-size: 13px; color: #64748b; margin-bottom: 15px; }
         
@@ -114,7 +114,11 @@
 </head>
 <body>
 
+    <!-- ==========================================
+         LAYER 1: GATEWAY SIGN IN & SIGN UP PANELS
+         ========================================== -->
     <div id="login-page">
+        <!-- Login Card Form Wrapper -->
         <div class="login-card" id="authLoginForm">
             <div class="login-logo">ClassPal</div>
             <div class="login-subtitle">🛡️ Safe Infrastructure Workspace Platform</div>
@@ -133,6 +137,7 @@
             </div>
         </div>
 
+        <!-- Registration Card Form Wrapper -->
         <div class="login-card" id="authRegisterForm" style="display:none;">
             <div class="login-logo">ClassPal</div>
             <div class="login-subtitle">✨ Provision a New Secure Account Core Node</div>
@@ -150,8 +155,12 @@
     </div>
 
 
+    <!-- ==========================================
+         LAYER 2: CENTRAL SUITE RUNTIME APP ENVIRONMENT
+         ========================================== -->
     <div id="app-container">
         
+        <!-- Sidebar Shell View Components -->
         <div class="sidebar">
             <div>
                 <div class="logo">ClassPal</div>
@@ -175,6 +184,7 @@
 
         <div class="main-content-pane">
             
+            <!-- VIEW 1: GENERAL CENTRAL HOME ENGINE -->
             <div id="dashboard" class="page-section active-page">
                 <div class="header">
                     <h2>Welcome to ClassPal Hub Dashboard!</h2>
@@ -200,7 +210,7 @@
                 </div>
                 <div class="banner school-mode">
                     <h3>🏫 Parent Controls & Constraints</h3>
-                    <p>Toggle restrictions or forcibly overwrite child login credentials to effectively restrict excessive operational use.</p>
+                    <p>Toggle restrictions, update profile security rules, or permanently remove profile registration files.</p>
                     <button class="action-btn" id="lockConfigBtn" onclick="openParentModal()">Open Parental Controls</button>
                 </div>
                 <div class="banner safety-strike">
@@ -209,15 +219,18 @@
                 </div>
             </div>
 
+            <!-- VIEW 2: SERVER HUB ARCHITECTURE -->
             <div id="my-servers" class="page-section">
                 <div class="header">
                     <h2>Safe Game Infrastructure Servers 🌐</h2>
                     <button class="action-btn blue-btn" onclick="openServerModal()">+ Provision New Server Instance</button>
                 </div>
                 <div class="grid" id="serversContainerGrid">
-                    </div>
+                    <!-- Loaded dynamically via runtime engines -->
+                </div>
             </div>
 
+            <!-- VIEW 3: CLAN SECTOR CONTROL SYSTEM -->
             <div id="clan-teams" class="page-section">
                 <div class="header">
                     <h2>Clan Teams Grid Controls 🎮</h2>
@@ -237,29 +250,36 @@
                     <div class="card">
                         <h3>My Current Registered Clan Member Roster</h3>
                         <ul id="clanRosterContainer" style="margin-left:20px; margin-top:10px; line-height:1.8;">
-                            </ul>
+                            <!-- Dynamically managed list entries -->
+                        </ul>
                     </div>
                 </div>
                 <div style="margin-top:20px;">
                     <h3>Pending Incoming Clan Handshake Invitations</h3>
                     <div class="request-card-list" id="incomingClanRequestsContainer">
-                        </div>
+                        <!-- Loaded programmatically -->
+                    </div>
                 </div>
             </div>
 
+            <!-- VIEW 4: SEPARATED PRIVATE DIRECT MESSAGES CHANNELS -->
             <div id="direct-messages" class="page-section" style="padding:0;">
                 <div class="dm-layout">
+                    <!-- Left Sidebar thread navigator -->
                     <div class="dm-sidebar">
                         <div class="dm-sidebar-header">Active Friends List</div>
                         <div id="dmThreadsListWrapper" style="overflow-y:auto; flex:1;">
-                            </div>
+                            <!-- Thread cards generated via dynamic arrays -->
+                        </div>
                     </div>
+                    <!-- Right Messaging Body Panel Wrapper -->
                     <div class="dm-window" id="dmChatBodyPanel">
                         <div class="no-chat-selected" id="noChatWarningPlaceholder">
                             <span>💬</span>
                             <p>Select a verified contact on the left directory to initialize safe communication channels.</p>
                         </div>
                         <div id="activeChatFrameContainer" style="display:none; flex-direction:column; height:100%;">
+                            <!-- VOICE STREAMING BAR PANEL OVERLAY -->
                             <div class="voice-channel-bar" id="voiceChannelStreamingBar">
                                 <div class="v-indicator">
                                     <div class="pulse-dot"></div>
@@ -275,7 +295,8 @@
                                 <button class="btn-action accept" style="padding:4px 10px;" onclick="initializeVoiceHandshake()">📞 Connect Voice Stream</button>
                             </div>
                             <div class="chat-messages" id="dmMessagesBox">
-                                </div>
+                                <!-- Stream loaded iteratively per target user schema keys -->
+                            </div>
                             <div class="chat-input-area">
                                 <input type="text" id="dmMessageInput" class="chat-input" placeholder="Compose filtered message text sequence..." onkeypress="handleDmKeyPress(event)">
                                 <button class="send-btn" onclick="sendPrivateChatMessage()">Transmit</button>
@@ -285,6 +306,7 @@
                 </div>
             </div>
 
+            <!-- VIEW 5: FRIENDS DIRECTORY INVITE LISTINGS -->
             <div id="add-friends-view" class="page-section">
                 <div class="header">
                     <h2>Manage Relationship Matrix Handshakes 🤝</h2>
@@ -300,10 +322,12 @@
                 <div>
                     <h3>Pending Connection Handshake Operations</h3>
                     <div class="request-card-list" id="incomingFriendRequestsContainer">
-                        </div>
+                        <!-- Filled dynamically -->
+                    </div>
                 </div>
             </div>
 
+            <!-- VIEW 6: LIVE AUDIT RUNTIME TELEMETRY LOGS -->
             <div id="safety-log" class="page-section">
                 <div class="header">
                     <h2>Security Operations Terminal Registry 📜</h2>
@@ -312,6 +336,7 @@
                 <div class="log-terminal" id="safetyLogTerminal"></div>
             </div>
 
+            <!-- VIEW 7: ABOUT METADATA SUMMARY -->
             <div id="about-section" class="page-section">
                 <div class="header">
                     <h2>About ClassPal Core Framework ℹ️</h2>
@@ -330,6 +355,11 @@
         </div>
     </div>
 
+    <!-- ==========================================
+         LAYER 3: MODAL DECORATOR CONFIGURATION WRAPPERS
+         ========================================== -->
+    
+    <!-- SYSTEM PARENT CONTROL MATRIX MODAL -->
     <div class="modal-overlay" id="parentModalOverlay">
         <div class="modal-box">
             <h3>Parental Security Controls 🔒</h3>
@@ -339,7 +369,14 @@
             <div style="background:#f1f5f9; padding:12px; border-radius:8px; margin-bottom:15px; text-align:left; display:none;" id="parentPasswordEditBox">
                 <label style="font-size:11px; font-weight:bold; color:#475569; display:block; margin-bottom:4px;">OVERWRITE CHILD ACCOUNT PASSWORD:</label>
                 <input type="text" id="parentNewUserPasswordInput" class="modal-input" style="margin:0; padding:8px; font-size:13px;" placeholder="Type new login password">
-                <button class="login-btn" style="margin-top:6px; padding:6px; font-size:12px; background:#dc4c64;" onclick="executeParentPasswordChange()">Force Update Password</button>
+                <button class="login-btn" style="margin-top:6px; padding:6px; font-size:12px; background:#e4a11b;" onclick="executeParentPasswordChange()">Force Update Password</button>
+            </div>
+
+            <!-- --- NEW ACCOUNT DELETION BLOCK INTERFACE --- -->
+            <div style="background:#fee2e2; padding:12px; border-radius:8px; margin-bottom:15px; text-align:left; border: 1px solid #fca5a5; display:none;" id="parentDeleteAccountBox">
+                <label style="font-size:11px; font-weight:bold; color:#991b1b; display:block; margin-bottom:4px;">PERMANENTLY DELETE ACCOUNT NODE:</label>
+                <p style="font-size:11px; color:#7f1d1d; margin-bottom:8px;">This will completely purge this profile, remove all peer data links, and dissolve owned clans. This action is irreversible.</p>
+                <button class="login-btn" style="margin:0; padding:8px; font-size:12px; background:#dc4c64;" onclick="executeAccountDeletion()">Permanently Delete Account 🔥</button>
             </div>
 
             <div class="modal-buttons">
@@ -349,6 +386,7 @@
         </div>
     </div>
 
+    <!-- GENERIC INSTANCE BUILDER MODAL -->
     <div class="modal-overlay" id="serverModalOverlay">
         <div class="modal-box">
             <h3>Build New Infrastructure Server Node 🌐</h3>
@@ -362,6 +400,9 @@
     </div>
 
 
+    <!-- ==========================================
+         LAYER 4: ACTIVE JAVASCRIPT LOCALDATABASE ROUTINES
+         ========================================== -->
     <script>
         // Dictionary block validation array listings
         const FILTER_DICTIONARY = ["STUPID", "DUMMY", "HATE", "TRASH", "FOOL", "SHUTUP"];
@@ -520,6 +561,7 @@
             document.getElementById('parentModalOverlay').style.display = 'flex';
             document.getElementById('parentPinInput').value = '';
             document.getElementById('parentPasswordEditBox').style.display = 'none';
+            document.getElementById('parentDeleteAccountBox').style.display = 'none';
             document.getElementById('parentToggleModeBtn').innerText = sessionUser.schoolMode ? "Disable School Mode" : "Enable School Mode";
         }
 
@@ -531,6 +573,7 @@
             const enteredPin = document.getElementById('parentPinInput').value.trim();
             if (enteredPin === sessionUser.pin) {
                 document.getElementById('parentPasswordEditBox').style.display = 'block';
+                document.getElementById('parentDeleteAccountBox').style.display = 'block';
                 
                 const users = dbGet('cp_users');
                 users[sessionUser.id].schoolMode = !users[sessionUser.id].schoolMode;
@@ -541,7 +584,7 @@
                 document.getElementById('parentToggleModeBtn').innerText = sessionUser.schoolMode ? "Disable School Mode" : "Enable School Mode";
                 
                 printTelemetry(`Parental validation verified. School Mode status modified to: ${sessionUser.schoolMode}`, "good");
-                alert(`School Mode rules has been ${sessionUser.schoolMode ? 'ENABLED' : 'DISABLED'}. Parent access panels unlocked.`);
+                alert(`School Mode rule setup has been ${sessionUser.schoolMode ? 'ENABLED' : 'DISABLED'}. Parent console options unlocked.`);
             } else {
                 alert("❌ INVALID SECURITY PIN: Authority signature mismatch.");
             }
@@ -559,6 +602,58 @@
             printTelemetry(`Administrative override changed login credential passwords for user: ${sessionUser.id}`, "good");
             alert("🔒 Profile node password successfully updated via security engine interface!");
             document.getElementById('parentNewUserPasswordInput').value = '';
+        }
+
+        /* --- ACCOUNT DELETION RECOVERY PIPELINE --- */
+        function executeAccountDeletion() {
+            const confirmPurge = confirm("⚠️ CRITICAL WARNING:\nAre you absolutely certain you want to permanently delete this account? All personal configs, relationship vectors, and safety records will be destroyed instantly.");
+            if (!confirmPurge) return;
+
+            const targetId = sessionUser.id;
+            const users = dbGet('cp_users');
+            const clans = dbGet('cp_clans');
+            let friendReqs = dbGet('cp_friend_reqs');
+            let clanReqs = dbGet('cp_clan_reqs');
+
+            // 1. Remove user mapping link references from all secondary user friends arrays
+            for (let uId in users) {
+                if (users[uId].friends) {
+                    users[uId].friends = users[uId].friends.filter(f => f !== targetId);
+                }
+            }
+
+            // 2. Clear out or dissolve assigned clan infrastructure blocks
+            const assignedClan = users[targetId].clan;
+            if (assignedClan && clans[assignedClan]) {
+                const clanInstance = clans[assignedClan];
+                if (clanInstance.owner === targetId) {
+                    // Owner is leaving: dissolve completely and sever existing group entries
+                    clanInstance.members.forEach(mId => {
+                        if (users[mId]) users[mId].clan = "";
+                    });
+                    delete clans[assignedClan];
+                } else {
+                    // Normal member leaving: remove from target roster array list
+                    clanInstance.members = clanInstance.members.filter(m => m !== targetId);
+                }
+            }
+
+            // 3. Purge operational handshake requests from outstanding lists
+            friendReqs = friendReqs.filter(r => r.from !== targetId && r.to !== targetId);
+            clanReqs = clanReqs.filter(r => r.fromUser !== targetId && r.toUser !== targetId && r.fromClan !== assignedClan);
+
+            // 4. Wipe user object node entirely from database matrix
+            delete users[targetId];
+
+            // 5. Update local storage caches
+            dbSet('cp_users', users);
+            dbSet('cp_clans', clans);
+            dbSet('cp_friend_reqs', friendReqs);
+            dbSet('cp_clan_reqs', clanReqs);
+
+            alert("🔥 PROFILE PURGED: The account node registration has been completely uninstalled from the ClassPal local framework.");
+            closeParentModal();
+            executeLogout();
         }
 
         /* --- SERVER ARCHITECTURE ENGINE SUBROUTINES --- */
@@ -822,19 +917,22 @@
         /* --- POINT-TO-POINT DM DATA ENGINE AND FILTERS --- */
         function renderDmThreads() {
             const listWrapper = document.getElementById('dmThreadsListWrapper');
+            if (!listWrapper) return;
             listWrapper.innerHTML = '';
             const users = dbGet('cp_users');
             
-            sessionUser.friends.forEach(fId => {
-                const friendObj = users[fId];
-                if (!friendObj) return;
-                
-                const div = document.createElement('div');
-                div.className = `friend-thread-item ${activeChatRecipient === fId ? 'active-thread' : ''}`;
-                div.innerHTML = `🟢 ${friendObj.name} <span style="font-size:10px; opacity:0.6; margin-left:auto;">[${fId}]</span>`;
-                div.onclick = () => selectDmThread(fId);
-                listWrapper.appendChild(div);
-            });
+            if (sessionUser && sessionUser.friends) {
+                sessionUser.friends.forEach(fId => {
+                    const friendObj = users[fId];
+                    if (!friendObj) return;
+                    
+                    const div = document.createElement('div');
+                    div.className = `friend-thread-item ${activeChatRecipient === fId ? 'active-thread' : ''}`;
+                    div.innerHTML = `🟢 ${friendObj.name} <span style="font-size:10px; opacity:0.6; margin-left:auto;">[${fId}]</span>`;
+                    div.onclick = () => selectDmThread(fId);
+                    listWrapper.appendChild(div);
+                });
+            }
         }
 
         function selectDmThread(friendId) {
@@ -957,7 +1055,8 @@
         }
 
         function terminateVoiceSession() {
-            document.getElementById('voiceChannelStreamingBar').style.display = 'none';
+            const bar = document.getElementById('voiceChannelStreamingBar');
+            if (bar) bar.style.display = 'none';
             isVoiceMuted = false;
             const btn = document.getElementById('voiceMuteToggleBtn');
             if (btn) {
