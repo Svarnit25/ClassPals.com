@@ -23,7 +23,6 @@
         .test-ids-box code { background: #e2e8f0; padding: 2px 4px; border-radius: 4px; font-family: monospace; font-weight: bold; }
 
         /* --- MAIN SYSTEM LAYOUT --- */
-        #app-container { display: none; height: 100vh; }
         .sidebar { width: 260px; background-color: #3b71ca; color: white; display: flex; flex-direction: column; justify-content: space-between; padding: 20px; height: 100%; float: left; }
         .logo { font-size: 24px; font-weight: bold; margin-bottom: 3px; }
         .user-profile-badge { font-size: 12px; background: rgba(255, 255, 255, 0.2); padding: 6px 10px; border-radius: 6px; margin-bottom: 20px; display: inline-block; word-break: break-all; }
@@ -54,13 +53,13 @@
         .action-btn.blue-btn { background: #3b71ca; color: white; margin-top: 0; }
         .action-btn.server-enter-btn { background: #3b71ca; color: white; width: 100%; padding: 8px; font-size: 13px; }
 
-        /* --- DISCORD SERVER WORKSPACE ENGINE UI --- */
-        .server-room-layout { display: flex; height: calc(100vh - 180px); background: white; border-radius: 12px; box-shadow: 0 4px 12px rgba(0,0,0,0.05); overflow: hidden; border: 1px solid #cbd5e1; }
-        .server-chat-pane { flex: 1; display: flex; flex-direction: column; background: #fafafa; }
-        .server-sidebar-pane { width: 260px; background: #f1f5f9; border-left: 1px solid #cbd5e1; display: flex; flex-direction: column; padding: 15px; gap: 15px; }
-        .server-sidebar-pane h4 { font-size: 13px; text-transform: uppercase; color: #475569; letter-spacing: 0.5px; border-bottom: 1px solid #cbd5e1; padding-bottom: 5px; }
+        /* --- DISCORD WORKSPACE CORE STYLES --- */
+        .server-room-layout, .clan-room-layout { display: flex; height: calc(100vh - 180px); background: white; border-radius: 12px; box-shadow: 0 4px 12px rgba(0,0,0,0.05); overflow: hidden; border: 1px solid #cbd5e1; }
+        .server-chat-pane, .clan-chat-pane { flex: 1; display: flex; flex-direction: column; background: #fafafa; }
+        .server-sidebar-pane, .clan-sidebar-pane { width: 280px; background: #f1f5f9; border-left: 1px solid #cbd5e1; display: flex; flex-direction: column; padding: 15px; gap: 15px; }
+        .server-sidebar-pane h4, .clan-sidebar-pane h4 { font-size: 13px; text-transform: uppercase; color: #475569; letter-spacing: 0.5px; border-bottom: 1px solid #cbd5e1; padding-bottom: 5px; }
         .roster-list { list-style: none; display: flex; flex-direction: column; gap: 6px; overflow-y: auto; flex: 1; }
-        .roster-item { display: flex; justify-content: space-between; align-items: center; font-size: 14px; font-weight: 500; background: white; padding: 6px 10px; border-radius: 6px; border: 1px solid #e2e8f0; }
+        .roster-item { display: flex; justify-content: space-between; align-items: center; font-size: 13px; font-weight: 500; background: white; padding: 6px 10px; border-radius: 6px; border: 1px solid #e2e8f0; line-height: 1.3; }
         .ban-mini-btn { background: #dc4c64; color: white; border: none; padding: 2px 6px; font-size: 11px; border-radius: 4px; cursor: pointer; font-weight: bold; }
         .ban-mini-btn:hover { background: #b3394b; }
         .server-select-dropdown { width: 100%; padding: 8px; border: 1px solid #cbd5e1; border-radius: 6px; outline: none; margin-bottom: 8px; font-size: 13px; }
@@ -110,7 +109,7 @@
         .log-line.good { color: #4ade80; }
         
         .modal-overlay { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0, 0, 0, 0.6); display: none; align-items: center; justify-content: center; z-index: 1000; }
-        .modal-box { background: white; padding: 25px; border-radius: 14px; width: 90%; max-width: 400px; text-align: center; box-shadow: 0 10px 25px rgba(0,0,0,0.3); max-height: 90vh; overflow-y: auto; }
+        .modal-box { background: white; padding: 25px; border-radius: 14px; width: 90%; max-width: 400px; text-align: center; box-shadow: 0 10px 25px rgba(0, 0, 0, 0.3); max-height: 90vh; overflow-y: auto; }
         .modal-box h3 { margin-bottom: 10px; color: #2a5298; }
         .modal-box p { font-size: 13px; color: #64748b; margin-bottom: 15px; }
         
@@ -162,7 +161,7 @@
     </div>
 
 
-    <div id="app-container">
+    <div id="app-container" style="display:none;">
         
         <div class="sidebar">
             <div>
@@ -242,8 +241,7 @@
 
                     <div class="server-room-layout">
                         <div class="server-chat-pane">
-                            <div class="chat-messages" id="serverChatMessagesContainer">
-                                </div>
+                            <div class="chat-messages" id="serverChatMessagesContainer"></div>
                             <div class="chat-input-area">
                                 <input type="text" id="serverChatMessageInputField" class="chat-input" placeholder="Send a clean, filtered message to the server channel..." onkeypress="handleServerChatKeyPress(event)">
                                 <button class="send-btn" onclick="transmitServerChatMessage()">Transmit</button>
@@ -254,15 +252,13 @@
                             <div>
                                 <h4>🤝 Invite Friends</h4>
                                 <p style="font-size:11px; color:#64748b; margin:4px 0 8px 0;">Select an active classmate to grant access:</p>
-                                <select id="serverInviteFriendSelector" class="server-select-dropdown">
-                                    </select>
+                                <select id="serverInviteFriendSelector" class="server-select-dropdown"></select>
                                 <button class="btn-action accept" style="width:100%;" onclick="executeServerFriendInvite()">Send Server Access Link</button>
                             </div>
 
                             <div style="flex:1; display:flex; flex-direction:column;">
-                                <h4>👥 Server Members Roster</h4>
-                                <ul class="roster-list" id="serverRosterDataContainer" style="margin-top:10px;">
-                                    </ul>
+                                <h4>👥 People in Server List</h4>
+                                <ul class="roster-list" id="serverRosterDataContainer" style="margin-top:10px;"></ul>
                             </div>
                         </div>
                     </div>
@@ -270,31 +266,66 @@
             </div>
 
             <div id="clan-teams" class="page-section">
-                <div class="header">
-                    <h2>Clan Teams Grid Controls 🎮</h2>
-                </div>
-                <div class="grid">
-                    <div class="card" style="grid-column: span 2;">
-                        <h3>Create / Join Custom Clan Matrix</h3>
-                        <div class="input-inline" style="display:flex; gap:10px; margin-top:10px;">
-                            <input type="text" id="clanNameInput" class="login-input" style="margin:0; text-align:left;" placeholder="Enter clan name identifier string...">
-                            <button class="login-btn" style="margin:0; width:160px;" onclick="createNewClan()">Found Clan</button>
-                        </div>
-                        <div class="input-inline" style="display:flex; gap:10px; margin-top:10px;">
-                            <input type="text" id="clanInviteTargetInput" class="login-input" style="margin:0; text-align:left;" placeholder="Invite player by their explicit Unique ID...">
-                            <button class="login-btn" style="margin:0; width:160px; background:#e4a11b;" onclick="sendClanInvite()">Invite Member</button>
+                <div id="clanSetupView">
+                    <div class="header">
+                        <h2>Clan Teams Studio 🎮</h2>
+                    </div>
+                    <div class="grid">
+                        <div class="card" style="grid-column: span 2; border: 2px solid #3b71ca;">
+                            <h3 style="color: #3b71ca; display: flex; align-items: center; gap: 6px;">✨ Create Your Own Clan</h3>
+                            <p style="font-size: 13px; color: #64748b; margin-bottom: 15px;">Establish a distinct brand name and set a group description to build a custom alliance network with classmates.</p>
+                            
+                            <div style="display: flex; flex-direction: column; gap: 12px; max-width: 550px;">
+                                <div>
+                                    <label style="font-size: 12px; font-weight: bold; color: #475569; display: block; margin-bottom: 4px;">CLAN ALLIANCE TITLE NAME:</label>
+                                    <input type="text" id="clanNameInput" class="login-input" style="text-align: left; margin: 0;" placeholder="e.g. Pixel Coders Elite, Alpha Legends">
+                                </div>
+                                <div>
+                                    <label style="font-size: 12px; font-weight: bold; color: #475569; display: block; margin-bottom: 4px;">CLAN MOTTO / MISSION DESCRIPTION:</label>
+                                    <input type="text" id="clanDescInput" class="login-input" style="text-align: left; margin: 0;" placeholder="e.g. Playing sandbox games together and scripting codes!">
+                                </div>
+                                <button class="login-btn" style="margin: 5px 0 0 0; background: #14a44d;" onclick="createNewClan()">Found & Deploy Clan 🚀</button>
+                            </div>
                         </div>
                     </div>
-                    <div class="card">
-                        <h3>My Current Registered Clan Member Roster</h3>
-                        <ul id="clanRosterContainer" style="margin-left:20px; margin-top:10px; line-height:1.8;">
-                            </ul>
+                    <div style="margin-top:25px;">
+                        <h3>Pending Incoming Clan Handshake Invitations</h3>
+                        <div class="request-card-list" id="incomingClanRequestsContainer"></div>
                     </div>
                 </div>
-                <div style="margin-top:20px;">
-                    <h3>Pending Incoming Clan Handshake Invitations</h3>
-                    <div class="request-card-list" id="incomingClanRequestsContainer">
+
+                <div id="activeClanWorkspace" style="display:none; height:100%;">
+                    <div class="header" style="margin-bottom: 15px;">
+                        <div>
+                            <h2 id="activeClanHeaderTitle">🎮 Loading Clan Deck...</h2>
+                            <p id="activeClanSubtitleDesc" style="font-size:12px; color:#64748b; margin-top:2px;">Motto: Loading...</p>
                         </div>
+                        <button class="btn-action decline" onclick="leaveClan()">🚪 Leave Clan Alliance</button>
+                    </div>
+
+                    <div class="clan-room-layout">
+                        <div class="clan-chat-pane">
+                            <div class="chat-messages" id="clanChatMessagesContainer"></div>
+                            <div class="chat-input-area">
+                                <input type="text" id="clanChatMessageInputField" class="chat-input" placeholder="Send a message to your active clan base stream..." onkeypress="handleClanChatKeyPress(event)">
+                                <button class="send-btn" onclick="transmitClanChatMessage()">Transmit</button>
+                            </div>
+                        </div>
+
+                        <div class="clan-sidebar-pane">
+                            <div>
+                                <h4>⚡ Invite Players</h4>
+                                <p style="font-size:11px; color:#64748b; margin:4px 0 8px 0;">Recruit someone by typing their Tracking ID:</p>
+                                <input type="text" id="clanInviteTargetInput" class="login-input" style="padding: 8px; font-size: 13px; margin-bottom: 8px; text-align: left;" placeholder="e.g. YUVAAN10">
+                                <button class="btn-action accept" style="width:100%;" onclick="sendClanInvite()">Dispatch Guild Invite</button>
+                            </div>
+
+                            <div style="flex:1; display:flex; flex-direction:column;">
+                                <h4>👥 People in Clan List</h4>
+                                <ul class="roster-list" id="clanRosterDataContainer" style="margin-top:10px;"></ul>
+                            </div>
+                        </div>
+                    </div>
                 </div>
             </div>
 
@@ -302,8 +333,7 @@
                 <div class="dm-layout">
                     <div class="dm-sidebar">
                         <div class="dm-sidebar-header">Active Friends List</div>
-                        <div id="dmThreadsListWrapper" style="overflow-y:auto; flex:1;">
-                            </div>
+                        <div id="dmThreadsListWrapper" style="overflow-y:auto; flex:1;"></div>
                     </div>
                     <div class="dm-window" id="dmChatBodyPanel">
                         <div class="no-chat-selected" id="noChatWarningPlaceholder">
@@ -314,7 +344,7 @@
                             <div class="voice-channel-bar" id="voiceChannelStreamingBar">
                                 <div class="v-indicator">
                                     <div class="pulse-dot"></div>
-                                    <span id="voiceStatusBarText">Voice Session Active: Channeling data with peer...</span>
+                                    <span id="voiceStatusBarText">Voice Session Active...</span>
                                 </div>
                                 <div class="voice-controls-btns">
                                     <button class="v-btn mute-btn" id="voiceMuteToggleBtn" onclick="toggleVoiceMute()">Mute Microphone</button>
@@ -325,8 +355,7 @@
                                 <span>Target User Session</span>
                                 <button class="btn-action accept" style="padding:4px 10px;" onclick="initializeVoiceHandshake()">📞 Connect Voice Stream</button>
                             </div>
-                            <div class="chat-messages" id="dmMessagesBox">
-                                </div>
+                            <div class="chat-messages" id="dmMessagesBox"></div>
                             <div class="chat-input-area">
                                 <input type="text" id="dmMessageInput" class="chat-input" placeholder="Compose filtered message text sequence..." onkeypress="handleDmKeyPress(event)">
                                 <button class="send-btn" onclick="sendPrivateChatMessage()">Transmit</button>
@@ -350,8 +379,7 @@
                 </div>
                 <div>
                     <h3>Pending Connection Handshake Operations</h3>
-                    <div class="request-card-list" id="incomingFriendRequestsContainer">
-                        </div>
+                    <div class="request-card-list" id="incomingFriendRequestsContainer"></div>
                 </div>
             </div>
 
@@ -370,7 +398,6 @@
                 <div class="card" style="line-height:1.6; max-width:700px;">
                     <h3 style="color:#3b71ca; font-size:22px; margin-bottom:10px;">ClassPal Ecosystem Blueprint</h3>
                     <p style="margin-bottom:12px;">ClassPal stands as a secure localized playground workspace interface developed explicitly to offer kids a sanitized communication platform insulated away from unstructured network exposures.</p>
-                    <p style="margin-bottom:12px;">Equipped with runtime string matching dictionaries, sandbox server provisioning blueprints, structured clan alignment arrays, and parent enforcement password tools, the suite provides multi-layered configuration capabilities.</p>
                     <hr style="margin:15px 0; border:0; border-top:1px solid #e2e8f0;">
                     <h4 style="font-weight:bold; margin-bottom:5px; color:#2a5298;">Primary Engineering & Architectural Design Specialists:</h4>
                     <p style="font-weight:600; font-size:15px; color:#475569;">🌟 Svarnit Gupta & Yuvaan Singh Parihar</p>
@@ -395,7 +422,6 @@
 
             <div style="background:#fee2e2; padding:12px; border-radius:8px; margin-bottom:15px; text-align:left; border: 1px solid #fca5a5; display:none;" id="parentDeleteAccountBox">
                 <label style="font-size:11px; font-weight:bold; color:#991b1b; display:block; margin-bottom:4px;">PERMANENTLY DELETE ACCOUNT NODE:</label>
-                <p style="font-size:11px; color:#7f1d1d; margin-bottom:8px;">This will completely purge this profile, remove all peer data links, and dissolve owned clans. This action is irreversible.</p>
                 <button class="login-btn" style="margin:0; padding:8px; font-size:12px; background:#dc4c64;" onclick="executeAccountDeletion()">Permanently Delete Account 🔥</button>
             </div>
 
@@ -424,7 +450,7 @@
 
         let sessionUser = null;
         let activeChatRecipient = null;
-        let activeServerId = null; // Tracking global pointer for open discord room view
+        let activeServerId = null; 
         let isVoiceMuted = false;
 
         function initializeDatabaseSchema() {
@@ -439,7 +465,9 @@
             if (!localStorage.getItem('cp_friend_reqs')) localStorage.setItem('cp_friend_reqs', JSON.stringify([]));
             if (!localStorage.getItem('cp_clan_reqs')) localStorage.setItem('cp_clan_reqs', JSON.stringify([]));
             if (!localStorage.getItem('cp_clans')) {
-                const defaultClans = { "Pixel Coders Elite": { name: "Pixel Coders Elite", owner: "SVARNIT25", members: ["SVARNIT25", "YUVAAN10"] } };
+                const defaultClans = { 
+                    "Pixel Coders Elite": { name: "Pixel Coders Elite", owner: "SVARNIT25", desc: "Playing sandbox games together and scripting codes!", members: ["SVARNIT25", "YUVAAN10"] } 
+                };
                 localStorage.setItem('cp_clans', JSON.stringify(defaultClans));
             }
             if (!localStorage.getItem('cp_servers')) {
@@ -513,7 +541,7 @@
 
             document.getElementById('profileBadge').innerText = `${sessionUser.name} [ID: ${sessionUser.id}]`;
             
-            exitActiveServerView(); // Resets layout views safely
+            exitActiveServerView(); 
             updateSecurityBanners();
             renderServersGrid();
             renderClanWorkspace();
@@ -536,7 +564,6 @@
                 serversTab.classList.add('locked-menu-disable');
                 clanTab.classList.add('locked-menu-disable');
                 dmTab.classList.add('locked-menu-disable');
-                printTelemetry("School Mode Restrictions actively locking transmission vectors.", "error");
             } else {
                 schoolBadge.style.display = 'none';
                 serversTab.classList.remove('locked-menu-disable');
@@ -559,9 +586,8 @@
             document.getElementById(pageId).classList.add('active-page');
             navElement.classList.add('active');
             
-            if(pageId === 'my-servers') {
-                exitActiveServerView();
-            }
+            if(pageId === 'my-servers') exitActiveServerView();
+            if(pageId === 'clan-teams') renderClanWorkspace();
             
             printTelemetry(`Switched visual route container view to: ${pageId}`);
         }
@@ -592,8 +618,6 @@
                 
                 updateSecurityBanners();
                 document.getElementById('parentToggleModeBtn').innerText = sessionUser.schoolMode ? "Disable School Mode" : "Enable School Mode";
-                
-                printTelemetry(`Parental validation verified. School Mode status modified to: ${sessionUser.schoolMode}`, "good");
                 alert(`School Mode rule setup has been ${sessionUser.schoolMode ? 'ENABLED' : 'DISABLED'}. Parent console options unlocked.`);
             } else {
                 alert("❌ INVALID SECURITY PIN: Authority signature mismatch.");
@@ -609,13 +633,12 @@
             dbSet('cp_users', users);
             sessionUser = users[sessionUser.id];
             
-            printTelemetry(`Administrative override changed login credential passwords for user: ${sessionUser.id}`, "good");
             alert("🔒 Profile node password successfully updated via security engine interface!");
             document.getElementById('parentNewUserPasswordInput').value = '';
         }
 
         function executeAccountDeletion() {
-            const confirmPurge = confirm("⚠️ CRITICAL WARNING:\nAre you absolutely certain you want to permanently delete this account? All personal configs, relationship vectors, and safety records will be destroyed instantly.");
+            const confirmPurge = confirm("⚠️ CRITICAL WARNING:\nAre you absolutely certain you want to permanently delete this account? All context configs will be destroyed instantly.");
             if (!confirmPurge) return;
 
             const targetId = sessionUser.id;
@@ -626,25 +649,20 @@
             let clanReqs = dbGet('cp_clan_reqs');
 
             for (let uId in users) {
-                if (users[uId].friends) {
-                    users[uId].friends = users[uId].friends.filter(f => f !== targetId);
-                }
+                if (users[uId].friends) users[uId].friends = users[uId].friends.filter(f => f !== targetId);
             }
 
             const assignedClan = users[targetId].clan;
             if (assignedClan && clans[assignedClan]) {
                 const clanInstance = clans[assignedClan];
                 if (clanInstance.owner === targetId) {
-                    clanInstance.members.forEach(mId => {
-                        if (users[mId]) users[mId].clan = "";
-                    });
+                    clanInstance.members.forEach(mId => { if (users[mId]) users[mId].clan = ""; });
                     delete clans[assignedClan];
                 } else {
                     clanInstance.members = clanInstance.members.filter(m => m !== targetId);
                 }
             }
 
-            // Scrub references inside custom game infrastructure servers
             servers.forEach(srv => {
                 if (srv.members) srv.members = srv.members.filter(m => m !== targetId);
                 if (srv.banned) srv.banned = srv.banned.filter(b => b !== targetId);
@@ -661,12 +679,12 @@
             dbSet('cp_friend_reqs', friendReqs);
             dbSet('cp_clan_reqs', clanReqs);
 
-            alert("🔥 PROFILE PURGED: The account node registration has been completely uninstalled from the ClassPal local framework.");
+            alert("🔥 Profile uninstalled successfully.");
             closeParentModal();
             executeLogout();
         }
 
-        /* --- DISCORD ENGINE COMPONENT LAYER SUBROUTINES --- */
+        /* --- SERVER TAB ARCHITECTURE ENG SUBS --- */
         function openServerModal() {
             if (sessionUser.schoolMode) return;
             document.getElementById('serverModalOverlay').style.display = 'flex';
@@ -679,7 +697,7 @@
 
         function submitCreateServer() {
             const name = document.getElementById('serverNameInput').value.trim();
-            if (!name) { alert("Please input a valid configuration identifier label."); return; }
+            if (!name) { alert("Please input a valid server label."); return; }
             
             const servers = dbGet('cp_servers');
             const uniqueSrvId = "SRV_" + Date.now();
@@ -689,14 +707,14 @@
                 name: `🌐 ${name}`,
                 owner: sessionUser.id,
                 desc: `Custom sandbox cluster created by ${sessionUser.name}.`,
-                members: [sessionUser.id], // Owner added directly as member node 0
+                members: [sessionUser.id], 
                 banned: []
             });
             
             dbSet('cp_servers', servers);
             closeServerModal();
             renderServersGrid();
-            printTelemetry(`Instantiated new isolated Discord cluster framework: ${name} [ID: ${uniqueSrvId}]`, "good");
+            printTelemetry(`Instantiated server framework: ${name}`, "good");
         }
 
         function renderServersGrid() {
@@ -706,9 +724,7 @@
             const servers = dbGet('cp_servers');
             
             servers.forEach(srv => {
-                // DISCORD RULE MAPPING: Hide infrastructure block if current session entity is blacklisted/banned
                 if (srv.banned && srv.banned.includes(sessionUser.id)) return;
-
                 const isJoined = srv.members && srv.members.includes(sessionUser.id);
 
                 const card = document.createElement('div');
@@ -728,18 +744,16 @@
         function tryAccessServer(serverId) {
             const servers = dbGet('cp_servers');
             const targetSrv = servers.find(s => s.id === serverId);
-            if (!targetSrv) { alert("Server network routing context lost."); return; }
+            if (!targetSrv) return;
 
             if (targetSrv.banned && targetSrv.banned.includes(sessionUser.id)) {
-                alert("⛔ ACCESS REJECTED: You have been permanently banned from entering this server matrix.");
+                alert("⛔ ACCESS REJECTED: Banned from this server matrix.");
                 return;
             }
 
-            // Auto-join if clicking for the first time
             if (!targetSrv.members.includes(sessionUser.id)) {
                 targetSrv.members.push(sessionUser.id);
                 dbSet('cp_servers', servers);
-                printTelemetry(`Profile entry log merged into infrastructure stack: ${targetSrv.name}`, "good");
             }
 
             launchActiveServerRoom(targetSrv);
@@ -747,15 +761,11 @@
 
         function launchActiveServerRoom(serverObj) {
             activeServerId = serverObj.id;
-            
             document.getElementById('serversBrowserListContainer').style.display = 'none';
             document.getElementById('activeServerRoomWorkspace').style.display = 'block';
-            
             document.getElementById('activeServerHeaderTitle').innerText = serverObj.name;
             document.getElementById('activeServerMetaSubtitle').innerText = `Unique Zone ID: ${serverObj.id} | Server Founder Node: ${serverObj.owner}`;
-            
             syncServerUIElements();
-            printTelemetry(`Connected chat socket pipeline interface link to room container [${serverObj.id}]`);
         }
 
         function exitActiveServerView() {
@@ -769,15 +779,15 @@
 
         function syncServerUIElements() {
             if (!activeServerId) return;
-            
             const servers = dbGet('cp_servers');
             const srv = servers.find(s => s.id === activeServerId);
             if (!srv) { exitActiveServerView(); return; }
 
-            // 1. Core Chat Room History Loader
+            const users = dbGet('cp_users');
+
+            // Chat Renderer
             const msgBox = document.getElementById('serverChatMessagesContainer');
             msgBox.innerHTML = '';
-            
             const chats = dbGet('cp_chats');
             const serverChatLogKey = `SERVER_${srv.id}`;
             const stream = chats[serverChatLogKey] || [];
@@ -795,104 +805,78 @@
             });
             msgBox.scrollTop = msgBox.scrollHeight;
 
-            // 2. Member Roster Management Compiler (with Discord-Style Eviction Controls)
+            // People in Server List Roster Renderer
             const rosterContainer = document.getElementById('serverRosterDataContainer');
             rosterContainer.innerHTML = '';
-            
             srv.members.forEach(mId => {
                 const li = document.createElement('li');
                 li.className = 'roster-item';
-                
-                let appendControlsHTML = '';
-                // Rule Checklist: Show absolute Ban triggers if current session user owns this cluster & player target isn't himself
+                const pMatch = users[mId];
+                const cleanDisplayName = pMatch ? `${pMatch.name} [${mId}]` : `Offline Node [${mId}]`;
+
+                let banBtn = '';
                 if (sessionUser.id === srv.owner && mId !== sessionUser.id) {
-                    appendControlsHTML = `<button class="ban-mini-btn" onclick="executeServerBanOperation('${mId}')">Ban 🚫</button>`;
+                    banBtn = `<button class="ban-mini-btn" onclick="executeServerBanOperation('${mId}')">Ban 🚫</button>`;
                 }
-                
-                li.innerHTML = `
-                    <span>👤 <strong>${mId}</strong> ${mId === srv.owner ? '<b style="color:#e4a11b;">[OWNER]</b>' : ''}</span>
-                    ${appendControlsHTML}
-                `;
+                li.innerHTML = `<span>👤 <strong>${cleanDisplayName}</strong> ${mId === srv.owner ? '<b style="color:#e4a11b;">[OWNER]</b>' : ''}</span> ${banBtn}`;
                 rosterContainer.appendChild(li);
             });
 
-            // 3. Dropdown Selection Sync for Non-Member Friends list
+            // Invites Dropdown Sync
             const dropdown = document.getElementById('serverInviteFriendSelector');
             dropdown.innerHTML = '';
-            
             let inviteCount = 0;
             sessionUser.friends.forEach(fId => {
                 if (!srv.members.includes(fId) && !srv.banned.includes(fId)) {
                     const opt = document.createElement('option');
                     opt.value = fId;
-                    opt.innerText = fId;
+                    opt.innerText = users[fId] ? `${users[fId].name} (${fId})` : fId;
                     dropdown.appendChild(opt);
                     inviteCount++;
                 }
             });
-
-            if(inviteCount === 0) {
-                dropdown.innerHTML = `<option value="">No friends available to add</option>`;
-            }
+            if(inviteCount === 0) dropdown.innerHTML = `<option value="">No friends available to add</option>`;
         }
 
         function executeServerFriendInvite() {
             const dropdown = document.getElementById('serverInviteFriendSelector');
             const selectedFriendId = dropdown.value;
-            
-            if (!selectedFriendId) { alert("Please establish a valid friend target connection endpoint signature first."); return; }
+            if (!selectedFriendId) return;
             
             const servers = dbGet('cp_servers');
             const srvIdx = servers.findIndex(s => s.id === activeServerId);
-            
             if (srvIdx > -1) {
                 servers[srvIdx].members.push(selectedFriendId);
                 dbSet('cp_servers', servers);
                 
-                // Track dynamic join system event notices directly into chat feed object mapping arrays
                 const chats = dbGet('cp_chats');
                 const serverChatLogKey = `SERVER_${activeServerId}`;
                 if (!chats[serverChatLogKey]) chats[serverChatLogKey] = [];
-                
-                chats[serverChatLogKey].push({
-                    type: 'sys',
-                    txt: `✨ SYSTEM NOTICE: User node [${selectedFriendId}] entered the channel matrix layer.`
-                });
+                chats[serverChatLogKey].push({ type: 'sys', txt: `✨ SYSTEM NOTICE: User node [${selectedFriendId}] entered.` });
                 dbSet('cp_chats', chats);
 
-                printTelemetry(`Dispatched access permit key to user [${selectedFriendId}] into cluster node [${activeServerId}]`, "good");
                 syncServerUIElements();
             }
         }
 
         function executeServerBanOperation(targetMemberId) {
-            const verification = confirm(`🔨 DISCORD ADMINISTRATIVE PROTOCOL:\nAre you absolutely sure you want to enforce a permanent blacklist ban on user node [${targetMemberId}]? They will be dropped and restricted indefinitely.`);
+            const verification = confirm("🔨 Ban user node permanently?");
             if (!verification) return;
 
             const servers = dbGet('cp_servers');
             const srvIdx = servers.findIndex(s => s.id === activeServerId);
-            
             if (srvIdx > -1) {
-                // Drop out of membership mapping registry indexes
                 servers[srvIdx].members = servers[srvIdx].members.filter(m => m !== targetMemberId);
-                
-                // Add tracking elements securely directly inside localized blacklist arrays
                 if (!servers[srvIdx].banned) servers[srvIdx].banned = [];
                 servers[srvIdx].banned.push(targetMemberId);
-                
                 dbSet('cp_servers', servers);
 
                 const chats = dbGet('cp_chats');
                 const serverChatLogKey = `SERVER_${activeServerId}`;
                 if (!chats[serverChatLogKey]) chats[serverChatLogKey] = [];
-                
-                chats[serverChatLogKey].push({
-                    type: 'sys',
-                    txt: `🚫 SECURITY OVERRIDE INTERVENTION: User node [${targetMemberId}] was officially BANNED and scrubbed by the server owner.`
-                });
+                chats[serverChatLogKey].push({ type: 'sys', txt: `🚫 ADMINISTRATIVE BAN: [${targetMemberId}] was blacklisted.` });
                 dbSet('cp_chats', chats);
 
-                printTelemetry(`Administrative execution block registered. Blacklisted entity user profile: ${targetMemberId}`, "error");
                 syncServerUIElements();
             }
         }
@@ -906,61 +890,36 @@
             const serverChatLogKey = `SERVER_${activeServerId}`;
             if (!chats[serverChatLogKey]) chats[serverChatLogKey] = [];
 
-            const isUnsafe = checkContentSafety(textContent);
-
-            if (isUnsafe) {
-                const users = dbGet('cp_users');
-                users[sessionUser.id].strikes += 1;
-                
-                printTelemetry(`[SERVER INFRASTRUCTURE HIT] Content scrub filter deployment match on: ${sessionUser.id}. Scrubbed data: "${textContent}"`, "error");
-                
-                chats[serverChatLogKey].push({
-                    type: 'sys',
-                    txt: `⚠️ SECURITY PROTOCOL INTERVENTION: A transmission packet from ${sessionUser.name} was scrubbed due to dictionary matching infraction rules.`
-                });
-                
-                if (users[sessionUser.id].strikes >= 3) {
-                    printTelemetry(`🔒 CRITICAL SECURITY LOCKOUT: Account node ${sessionUser.id} exceeded fault limits inside server channels.`, "error");
-                    alert("🚨 ACCOUNT LOCKED DOWN: This profile node has triggered 3 dictionary block strikes. Session closed.");
-                    dbSet('cp_users', users);
-                    dbSet('cp_chats', chats);
-                    executeLogout();
-                    return;
-                } else {
-                    alert(`⚠️ AUTOMATED WORD FILTER ALERT:\nYour message matches words flagged in our secure dictionary database. Strike logged (${users[sessionUser.id].strikes}/3).`);
-                }
-                
-                dbSet('cp_users', users);
-                sessionUser = users[sessionUser.id];
-                updateSecurityBanners();
+            if (checkContentSafety(textContent)) {
+                handleContentInfraction(chats, serverChatLogKey, textContent);
             } else {
-                chats[serverChatLogKey].push({
-                    sender: sessionUser.id,
-                    senderName: sessionUser.name,
-                    type: 'chat',
-                    txt: textContent
-                });
-                printTelemetry(`Server message array block passed into tracking cluster socket stream: ${serverChatLogKey}`);
+                chats[serverChatLogKey].push({ sender: sessionUser.id, senderName: sessionUser.name, type: 'chat', txt: textContent });
             }
-
             dbSet('cp_chats', chats);
             input.value = '';
             syncServerUIElements();
         }
 
-        function handleServerChatKeyPress(e) {
-            if (e.key === 'Enter') transmitServerChatMessage();
-        }
+        function handleServerChatKeyPress(e) { if (e.key === 'Enter') transmitServerChatMessage(); }
 
-        /* --- CLAN ALLIANCE SYSTEM OPERATIONS --- */
+
+        /* --- CLAN CREATION & WORKSPACE STUDIO ENGINE --- */
         function createNewClan() {
             const name = document.getElementById('clanNameInput').value.trim();
-            if (!name) { alert("Clan name identifier string cannot be empty."); return; }
+            const description = document.getElementById('clanDescInput').value.trim() || "No customized clan description configured.";
+            
+            if (!name) { alert("❌ Setup Failed: Clan title name parameter cannot be left blank."); return; }
             
             const clans = dbGet('cp_clans');
-            if (clans[name]) { alert("This clan designation identifier already populates the index."); return; }
+            if (clans[name]) { alert("❌ Conflict: This clan name identifier is already claimed inside the database index."); return; }
             
-            clans[name] = { name: name, owner: sessionUser.id, members: [sessionUser.id] };
+            // Build the new custom clan payload struct
+            clans[name] = { 
+                name: name, 
+                owner: sessionUser.id, 
+                desc: description,
+                members: [sessionUser.id] 
+            };
             dbSet('cp_clans', clans);
             
             const users = dbGet('cp_users');
@@ -969,20 +928,22 @@
             sessionUser = users[sessionUser.id];
             
             document.getElementById('clanNameInput').value = '';
+            document.getElementById('clanDescInput').value = '';
+            
             renderClanWorkspace();
-            printTelemetry(`Founded new custom clan alliance matrix block: ${name}`, "good");
+            printTelemetry(`Founded and initialized custom clan alliance: "${name}"`, "good");
         }
 
         function sendClanInvite() {
             const targetId = document.getElementById('clanInviteTargetInput').value.trim().toUpperCase();
             const users = dbGet('cp_users');
             
-            if (!sessionUser.clan) { alert("You must establish or belong to an active clan base structure first."); return; }
-            if (!targetId || !users[targetId]) { alert("Target tracking user sequence node not discovered."); return; }
+            if (!sessionUser.clan) { alert("You don't own an active clan base."); return; }
+            if (!targetId || !users[targetId]) { alert("Target tracking user not discovered."); return; }
             
             const reqs = dbGet('cp_clan_reqs');
             if (reqs.some(r => r.fromClan === sessionUser.clan && r.toUser === targetId)) {
-                alert("An active invitation tracking thread already targets this user node.");
+                alert("Invitation track already outstanding targeting this classmate.");
                 return;
             }
             
@@ -990,60 +951,151 @@
             dbSet('cp_clan_reqs', reqs);
             
             document.getElementById('clanInviteTargetInput').value = '';
-            alert(`Handshake invite to join [${sessionUser.clan}] successfully cast to player ${targetId}!`);
-            printTelemetry(`Dispatched clan membership invite link targeting: ${targetId}`);
+            alert(`Handshake guild invitation cast out to [${targetId}]!`);
         }
 
         function renderClanWorkspace() {
-            const roster = document.getElementById('clanRosterContainer');
-            if(!roster) return;
-            roster.innerHTML = '';
+            const users = dbGet('cp_users');
             const clans = dbGet('cp_clans');
             const currentClanName = sessionUser.clan;
-            
+
+            const setupView = document.getElementById('clanSetupView');
+            const workspaceView = document.getElementById('activeClanWorkspace');
+
             if (currentClanName && clans[currentClanName]) {
+                setupView.style.display = 'none';
+                workspaceView.style.display = 'block';
+
                 const clan = clans[currentClanName];
-                clan.members.forEach(m => {
+                document.getElementById('activeClanHeaderTitle').innerText = `🛡️ Clan Workspace: ${clan.name}`;
+                document.getElementById('activeClanSubtitleDesc').innerText = `Motto: ${clan.desc || 'No motto configured.'}`;
+
+                // Render People in Clan List
+                const rosterContainer = document.getElementById('clanRosterDataContainer');
+                rosterContainer.innerHTML = '';
+                clan.members.forEach(mId => {
                     const li = document.createElement('li');
-                    li.innerHTML = `👤 <strong>${m}</strong> ${m === clan.owner ? '<span style="color:#e4a11b;">[FOUNDER]</span>' : ''}`;
-                    roster.appendChild(li);
+                    li.className = 'roster-item';
+                    const mProfile = users[mId];
+                    const dynamicDisplayName = mProfile ? `${mProfile.name} [${mId}]` : mId;
+                    li.innerHTML = `<span>👤 <strong>${dynamicDisplayName}</strong> ${mId === clan.owner ? '<b style="color:#e4a11b;">[FOUNDER]</b>' : ''}</span>`;
+                    rosterContainer.appendChild(li);
                 });
+
+                // Render Clan Chat Messages
+                const msgBox = document.getElementById('clanChatMessagesContainer');
+                msgBox.innerHTML = '';
+                const chats = dbGet('cp_chats');
+                const clanChatLogKey = `CLAN_${clan.name}`;
+                const stream = chats[clanChatLogKey] || [];
+
+                stream.forEach(m => {
+                    const item = document.createElement('div');
+                    if (m.type === 'sys') {
+                        item.className = 'msg sys-alert';
+                        item.innerText = m.txt;
+                    } else {
+                        item.className = m.sender === sessionUser.id ? 'msg outgoing' : 'msg incoming';
+                        item.innerHTML = `<strong style="font-size:11px; display:block; opacity:0.8; margin-bottom:2px;">${m.senderName} (${m.sender})</strong>${m.txt}`;
+                    }
+                    msgBox.appendChild(item);
+                });
+                msgBox.scrollTop = msgBox.scrollHeight;
+
             } else {
-                roster.innerHTML = '<li style="color:#94a3b8; list-style:none; margin-left:-20px;">No registered clan structure attached to profile node.</li>';
+                workspaceView.style.display = 'none';
+                setupView.style.display = 'block';
+
+                const reqsContainer = document.getElementById('incomingClanRequestsContainer');
+                reqsContainer.innerHTML = '';
+                const allReqs = dbGet('cp_clan_reqs');
+                const inputs = allReqs.filter(r => r.toUser === sessionUser.id);
+                
+                document.getElementById('clanBadgeCount').innerText = inputs.length;
+                document.getElementById('clanBadgeCount').style.display = inputs.length > 0 ? 'inline-block' : 'none';
+                
+                if (inputs.length === 0) {
+                    reqsContainer.innerHTML = '<p style="color:#94a3b8; font-size:13px;">No incoming guild matrix invites pending clear.</p>';
+                } else {
+                    inputs.forEach((r, idx) => {
+                        const div = document.createElement('div');
+                        div.className = 'req-item';
+                        div.innerHTML = `
+                            <div><strong>${r.fromClan}</strong><span style="font-size:11px; color:#64748b; display:block;">Recruiter: ${r.fromUser}</span></div>
+                            <div class="req-buttons">
+                                <button class="btn-action accept" onclick="acceptClanInvite('${r.fromClan}', ${idx})">Join</button>
+                                <button class="btn-action decline" onclick="declineClanInvite(${idx})">Decline</button>
+                            </div>
+                        `;
+                        reqsContainer.appendChild(div);
+                    });
+                }
             }
-            
-            const reqsContainer = document.getElementById('incomingClanRequestsContainer');
-            reqsContainer.innerHTML = '';
-            const allReqs = dbGet('cp_clan_reqs');
-            const inputs = allReqs.filter(r => r.toUser === sessionUser.id);
-            
-            document.getElementById('clanBadgeCount').innerText = inputs.length;
-            document.getElementById('clanBadgeCount').style.display = inputs.length > 0 ? 'inline-block' : 'none';
-            
-            if (inputs.length === 0) {
-                reqsContainer.innerHTML = '<p style="color:#94a3b8; font-size:13px;">No incoming guild matrix invites pending clear.</p>';
+        }
+
+        function transmitClanChatMessage() {
+            const input = document.getElementById('clanChatMessageInputField');
+            const textContent = input.value.trim();
+            if (!textContent || !sessionUser.clan) return;
+
+            const chats = dbGet('cp_chats');
+            const clanChatLogKey = `CLAN_${sessionUser.clan}`;
+            if (!chats[clanChatLogKey]) chats[clanChatLogKey] = [];
+
+            if (checkContentSafety(textContent)) {
+                handleContentInfraction(chats, clanChatLogKey, textContent);
             } else {
-                inputs.forEach((r, idx) => {
-                    const div = document.createElement('div');
-                    div.className = 'req-item';
-                    div.innerHTML = `
-                        <div>
-                            <strong>${r.fromClan}</strong>
-                            <span style="font-size:11px; color:#64748b; display:block;">Recruiter: ${r.fromUser}</span>
-                        </div>
-                        <div class="req-buttons">
-                            <button class="btn-action accept" onclick="acceptClanInvite('${r.fromClan}', ${idx})">Join</button>
-                            <button class="btn-action decline" onclick="declineClanInvite(${idx})">Decline</button>
-                        </div>
-                    `;
-                    reqsContainer.appendChild(div);
-                });
+                chats[clanChatLogKey].push({ sender: sessionUser.id, senderName: sessionUser.name, type: 'chat', txt: textContent });
+            }
+
+            dbSet('cp_chats', chats);
+            input.value = '';
+            renderClanWorkspace();
+        }
+
+        function handleClanChatKeyPress(e) { if (e.key === 'Enter') transmitClanChatMessage(); }
+
+        function leaveClan() {
+            if(!sessionUser.clan) return;
+            const confirmation = confirm("⚠️ Resign membership and abandon this clan stream?");
+            if(!confirmation) return;
+
+            const clans = dbGet('cp_clans');
+            const clanName = sessionUser.clan;
+            
+            if (clans[clanName]) {
+                const clanInstance = clans[clanName];
+                if (clanInstance.owner === sessionUser.id) {
+                    alert("📢 Dissolving core infrastructure since the original Founder left.");
+                    const users = dbGet('cp_users');
+                    clanInstance.members.forEach(mId => { if (users[mId]) users[mId].clan = ""; });
+                    delete clans[clanName];
+                    dbSet('cp_clans', clans);
+                    dbSet('cp_users', users);
+                } else {
+                    clanInstance.members = clanInstance.members.filter(m => m !== sessionUser.id);
+                    dbSet('cp_clans', clans);
+                    const users = dbGet('cp_users');
+                    users[sessionUser.id].clan = "";
+                    dbSet('cp_users', users);
+                }
+
+                const chats = dbGet('cp_chats');
+                const clanChatLogKey = `CLAN_${clanName}`;
+                if (chats[clanChatLogKey]) {
+                    chats[clanChatLogKey].push({ type: 'sys', txt: `🚪 SYSTEM NOTICE: [${sessionUser.name}] has departed.` });
+                    dbSet('cp_chats', chats);
+                }
+
+                const usersRefresh = dbGet('cp_users');
+                sessionUser = usersRefresh[sessionUser.id];
+                renderClanWorkspace();
             }
         }
 
         function acceptClanInvite(clanName, originalIdx) {
             const clans = dbGet('cp_clans');
-            if (!clans[clanName]) { alert("Clan base has disintegrated."); return; }
+            if (!clans[clanName]) return;
             
             clans[clanName].members.push(sessionUser.id);
             dbSet('cp_clans', clans);
@@ -1060,7 +1112,6 @@
             dbSet('cp_clan_reqs', reqs);
             
             renderClanWorkspace();
-            printTelemetry(`Merged user channel data arrays into clan hub node: ${clanName}`, "good");
         }
 
         function declineClanInvite(originalIdx) {
@@ -1069,32 +1120,28 @@
             const realIdx = reqs.indexOf(targetReq);
             if (realIdx > -1) reqs.splice(realIdx, 1);
             dbSet('cp_clan_reqs', reqs);
-            
             renderClanWorkspace();
-            printTelemetry(`Rejected clan membership pipeline allocation stream.`);
         }
+
 
         /* --- RELATIONSHIP PEER LINK OPERATIONS --- */
         function emitFriendRequest() {
             const targetId = document.getElementById('friendSearchInput').value.trim().toUpperCase();
             const users = dbGet('cp_users');
             
-            if (!targetId || !users[targetId]) { alert("Target tracking user sequence node not discovered."); return; }
-            if (targetId === sessionUser.id) { alert("Cannot loop network link back to your own endpoint ID code."); return; }
-            if (sessionUser.friends.includes(targetId)) { alert("Target endpoint relationship matrices are already synced."); return; }
+            if (!targetId || !users[targetId]) { alert("Target node user not found."); return; }
+            if (targetId === sessionUser.id) { alert("Cannot friend yourself."); return; }
+            if (sessionUser.friends.includes(targetId)) { alert("Already synced friend links."); return; }
             
             const reqs = dbGet('cp_friend_reqs');
-            if (reqs.some(r => r.from === sessionUser.id && r.to === targetId)) {
-                alert("An outbound handshake invite is already open in queue routing.");
-                return;
-            }
+            if (reqs.some(r => r.from === sessionUser.id && r.to === targetId)) return;
             
             reqs.push({ from: sessionUser.id, fromName: sessionUser.name, to: targetId });
             dbSet('cp_friend_reqs', reqs);
             
             document.getElementById('friendSearchInput').value = '';
-            alert(`Outbound relationship sync handshake safely dispatched to tracking code: ${targetId}`);
-            printTelemetry(`Emitted friend connection invitation array stream matching: ${targetId}`);
+            alert("Sync connection request dispatched.");
+            renderFriendRequests();
         }
 
         function renderFriendRequests() {
@@ -1115,10 +1162,7 @@
                     const div = document.createElement('div');
                     div.className = 'req-item';
                     div.innerHTML = `
-                        <div>
-                            <strong>${r.fromName}</strong> (${r.from})
-                            <span style="font-size:11px; color:#64748b; display:block;">Requests standard point-to-point data link handshake.</span>
-                        </div>
+                        <div><strong>${r.fromName}</strong> (${r.from})</div>
                         <div class="req-buttons">
                             <button class="btn-action accept" onclick="acceptFriendRequest(${idx})">Accept Link</button>
                             <button class="btn-action decline" onclick="declineFriendRequest(${idx})">Decline</button>
@@ -1141,7 +1185,6 @@
             if (users[senderId] && users[receiverId]) {
                 if (!users[senderId].friends.includes(receiverId)) users[senderId].friends.push(receiverId);
                 if (!users[receiverId].friends.includes(senderId)) users[receiverId].friends.push(senderId);
-                
                 dbSet('cp_users', users);
                 sessionUser = users[receiverId];
             }
@@ -1152,7 +1195,6 @@
             
             renderFriendRequests();
             renderDmThreads();
-            printTelemetry(`Synced relationship matrix pairing logic with peer: ${senderId}`, "good");
         }
 
         function declineFriendRequest(originalIdx) {
@@ -1163,12 +1205,10 @@
             const realIdx = reqs.indexOf(targetReq);
             if (realIdx > -1) reqs.splice(realIdx, 1);
             dbSet('cp_friend_reqs', reqs);
-            
             renderFriendRequests();
-            printTelemetry(`Severed pending relationship registration data pipeline.`);
         }
 
-        /* --- POINT-TO-POINT DM DATA ENGINE AND FILTERS --- */
+        /* --- POINT-TO-POINT DM DATA SUBS --- */
         function renderDmThreads() {
             const listWrapper = document.getElementById('dmThreadsListWrapper');
             if (!listWrapper) return;
@@ -1244,36 +1284,10 @@
             const chats = dbGet('cp_chats');
             if (!chats[key]) chats[key] = [];
             
-            const isUnsafe = checkContentSafety(txt);
-            
-            if (isUnsafe) {
-                const users = dbGet('cp_users');
-                users[sessionUser.id].strikes += 1;
-                
-                printTelemetry(`AUTOMATED CONTENT SAFETY CRUNCH: Infraction word hit from user node: ${sessionUser.id}. Scrubbed payload: "${txt}"`, "error");
-                
-                chats[key].push({
-                    type: 'sys',
-                    txt: `⚠️ SECURITY PROTOCOL INTERVENTION: A transmission packet from ${sessionUser.name} was scrubbed due to dictionary matching infraction rules.`
-                });
-                
-                if (users[sessionUser.id].strikes >= 3) {
-                    printTelemetry(`🔒 CRITICAL COMPROMISE: Account node ${sessionUser.id} exceeded max fault thresholds. Freezing local state logs.`, "error");
-                    alert("🚨 ACCOUNT LOCKED DOWN: This profile node has triggered 3 dictionary block strikes. Session closed.");
-                    dbSet('cp_users', users);
-                    dbSet('cp_chats', chats);
-                    executeLogout();
-                    return;
-                } else {
-                    alert(`⚠️ AUTOMATED WORD FILTER ALERT:\nYour message matches words flagged in our secure dictionary database. Strike logged (${users[sessionUser.id].strikes}/3).`);
-                }
-                
-                dbSet('cp_users', users);
-                sessionUser = users[sessionUser.id];
-                updateSecurityBanners();
+            if (checkContentSafety(txt)) {
+                handleContentInfraction(chats, key, txt);
             } else {
                 chats[key].push({ sender: sessionUser.id, type: 'chat', txt: txt });
-                printTelemetry(`Clean safe chat transmission successfully cataloged over link map: ${key}`);
             }
             
             dbSet('cp_chats', chats);
@@ -1281,16 +1295,38 @@
             loadChatMessagesStream();
         }
 
-        function handleDmKeyPress(e) {
-            if (e.key === 'Enter') sendPrivateChatMessage();
+        function handleDmKeyPress(e) { if (e.key === 'Enter') sendPrivateChatMessage(); }
+
+        /* --- GLOBAL FILTER STRIKE POLICY PROTOCOLS --- */
+        function handleContentInfraction(chatsObj, storageKey, flaggedPayload) {
+            const users = dbGet('cp_users');
+            users[sessionUser.id].strikes += 1;
+            
+            printTelemetry(`[SECURITY INFRACTION] Dictionary violation triggered by user: ${sessionUser.id}. Packet scrubbed: "${flaggedPayload}"`, "error");
+            
+            chatsObj[storageKey].push({
+                type: 'sys',
+                txt: `⚠️ SECURITY REMOVAL: A message packet from ${sessionUser.name} was scrubbed due to matching system block rules.`
+            });
+            
+            if (users[sessionUser.id].strikes >= 3) {
+                alert("🚨 MAXIMUM ACCOUNT FAULT THRESHOLD EXCEEDED:\nThis profile triggered 3 content infractions. Locking node.");
+                dbSet('cp_users', users);
+                dbSet('cp_chats', chatsObj);
+                executeLogout();
+            } else {
+                alert(`⚠️ FILTER DETECTED WORD:\nYour message matched words logged in our secure data filter. Strike logged (${users[sessionUser.id].strikes}/3).`);
+                dbSet('cp_users', users);
+                sessionUser = users[sessionUser.id];
+                updateSecurityBanners();
+            }
         }
 
         /* --- AUDIO STREAM SIMULATION METHODS --- */
         function initializeVoiceHandshake() {
             if (sessionUser.schoolMode) return;
             document.getElementById('voiceChannelStreamingBar').style.display = 'flex';
-            document.getElementById('voiceStatusBarText').innerText = `Simulated Voice Session Active: Link established with contact [${activeChatRecipient}]`;
-            printTelemetry(`Initialized analog network stream audio simulation link targeting node: ${activeChatRecipient}`, "good");
+            document.getElementById('voiceStatusBarText').innerText = `Simulated Voice Session Active: Link established with [${activeChatRecipient}]`;
         }
 
         function toggleVoiceMute() {
@@ -1299,13 +1335,11 @@
             if (isVoiceMuted) {
                 btn.innerText = "Unmute Microphone";
                 btn.style.background = "#dc4c64";
-                document.getElementById('voiceStatusBarText').innerText = `Voice Session Paused: Microphone muted locally.`;
-                printTelemetry("Audio capture hardware parameters muted locally.");
+                document.getElementById('voiceStatusBarText').innerText = `Voice Session Paused: Muted locally.`;
             } else {
                 btn.innerText = "Mute Microphone";
                 btn.style.background = "#f59e0b";
-                document.getElementById('voiceStatusBarText').innerText = `Simulated Voice Session Active: Link established with contact [${activeChatRecipient}]`;
-                printTelemetry("Audio capture streams re-engaged.");
+                document.getElementById('voiceStatusBarText').innerText = `Simulated Voice Session Active: Link established with [${activeChatRecipient}]`;
             }
         }
 
@@ -1314,15 +1348,10 @@
             if (bar) bar.style.display = 'none';
             isVoiceMuted = false;
             const btn = document.getElementById('voiceMuteToggleBtn');
-            if (btn) {
-                btn.innerText = "Mute Microphone";
-                btn.style.background = "#f59e0b";
-            }
-            printTelemetry("Audio multiplexer link safely disconnected.");
+            if (btn) { btn.innerText = "Mute Microphone"; btn.style.background = "#f59e0b"; }
         }
 
         function executeLogout() {
-            printTelemetry(`User session state unlinked for context tracking node: ${sessionUser ? sessionUser.id : 'UNKNOWN'}`);
             sessionUser = null;
             activeChatRecipient = null;
             activeServerId = null;
@@ -1334,7 +1363,7 @@
 
         window.onload = function() {
             initializeDatabaseSchema();
-            printTelemetry("System Core Runtime Subsystem fully initialized. Awaiting secure credential verification validation.");
+            printTelemetry("System Subsystems online. Awaiting authentication verification.");
         };
     </script>
 </body>
