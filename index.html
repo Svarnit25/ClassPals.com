@@ -1,0 +1,206 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>ClassPal | Safe Social Space for Kids</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        }
+
+        body {
+            background-color: #f0f4f8;
+            color: #333;
+            display: flex;
+            height: 100vh;
+            overflow: hidden;
+        }
+
+        /* Sidebar Navigation */
+        .sidebar {
+            width: 260px;
+            background-color: #4a6fa5;
+            color: white;
+            padding: 20px;
+            display: flex;
+            flex-direction: column;
+            justify-content: space-between;
+        }
+
+        .logo h1 {
+            font-size: 24px;
+            font-weight: bold;
+            margin-bottom: 30px;
+            letter-spacing: 1px;
+        }
+
+        .nav-links {
+            list-style: none;
+        }
+
+        .nav-links li {
+            padding: 12px 15px;
+            margin-bottom: 8px;
+            border-radius: 8px;
+            cursor: pointer;
+            transition: background 0.3s;
+        }
+
+        .nav-links li:hover, .nav-links li.active {
+            background-color: #3b5c88;
+        }
+
+        .credits {
+            font-size: 12px;
+            border-top: 1px solid #6b8ebe;
+            padding-top: 15px;
+            line-height: 1.5;
+        }
+
+        /* Main Content Area */
+        .main-content {
+            flex: 1;
+            padding: 40px;
+            overflow-y: auto;
+        }
+
+        .header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 30px;
+        }
+
+        .safety-badge {
+            background-color: #2ec4b6;
+            color: white;
+            padding: 8px 16px;
+            border-radius: 20px;
+            font-weight: bold;
+            font-size: 14px;
+        }
+
+        /* Features Grid */
+        .grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+            gap: 20px;
+            margin-bottom: 40px;
+        }
+
+        .card {
+            background: white;
+            padding: 25px;
+            border-radius: 12px;
+            box-shadow: 0 4px 6px rgba(0,0,0,0.05);
+        }
+
+        .card h3 {
+            color: #4a6fa5;
+            margin-bottom: 10px;
+        }
+
+        /* School Mode Dashboard Section */
+        .parent-control-box {
+            background: #ff9f1c;
+            color: white;
+            padding: 30px;
+            border-radius: 15px;
+            margin-top: 20px;
+        }
+
+        .strike-counter {
+            background: #e71d36;
+            color: white;
+            padding: 20px;
+            border-radius: 12px;
+            margin-top: 20px;
+        }
+
+        .btn {
+            background: white;
+            color: #ff9f1c;
+            border: none;
+            padding: 10px 20px;
+            border-radius: 8px;
+            font-weight: bold;
+            cursor: pointer;
+            margin-top: 15px;
+        }
+
+        .btn-danger {
+            background: white;
+            color: #e71d36;
+        }
+    </style>
+</head>
+<body>
+
+    <!-- Sidebar Navigation -->
+    <div class="sidebar">
+        <div>
+            <div class="logo">
+                <h1>ClassPal.com</h1>
+            </div>
+            <ul class="nav-links">
+                <li class="active">Dashboard</li>
+                <li>My Servers</li>
+                <li>Clan Teams</li>
+                <li>Direct Messages</li>
+                <li>Add Friends (by ID)</li>
+                <li>Safety Log</li>
+            </ul>
+        </div>
+        
+        <!-- Creator Credits Included Here -->
+        <div class="credits">
+            <p><strong>Created & Made By:</strong></p>
+            <p>Svarnit Gupta &<br>Yuvaan Singh Parhihar</p>
+        </div>
+    </div>
+
+    <!-- Main Content Area -->
+    <div class="main-content">
+        <div class="header">
+            <h2>Welcome to ClassPal!</h2>
+            <div class="safety-badge">🛡️ 100% Kids Safe Zone</div>
+        </div>
+
+        <!-- Features Grid -->
+        <div class="grid">
+            <div class="card">
+                <h3>💬 Text & Voice Chat</h3>
+                <p>Connect safely with friends in custom servers and quick direct messages designed just for kids.</p>
+            </div>
+            <div class="card">
+                <h3>🛡️ Smart Filter</h3>
+                <p>Our automated systems instantly block bad words and harmful links to keep the community clean.</p>
+            </div>
+            <div class="card">
+                <h3>🎮 Clan Teams</h3>
+                <p>Create your own squad, invite classmates using your unique IDs, and play together safely.</p>
+            </div>
+        </div>
+
+        <!-- School Mode Panel (Parent Controlled) -->
+        <div class="parent-control-box">
+            <h3>🏫 School Mode (Under 9 Years Old)</h3>
+            <p>When turned on by parents, this completely locks and blocks all Chatting and VC functionalities, leaving only educational and safe group tracking open.</p>
+            <button class="btn" onclick="alert('Parent Password Required to Toggle School Mode')">Configure School Mode</button>
+        </div>
+
+        <!-- Strike System Information Tab -->
+        <div class="strike-counter">
+            <h3>⚠️ Safety Strike System (3-Chance Policy)</h3>
+            <p>ClassPal has zero tolerance for bad links or harmful language. Every account has exactly 3 chances.</p>
+            <p style="margin-top: 10px; font-weight: bold;">If the limit goes up, the account is permanently deleted and blocked from making a new one.</p>
+            <button class="btn btn-danger" onclick="alert('Viewing Current Strike Log...')">View Account Status</button>
+        </div>
+    </div>
+
+</body>
+</html>
