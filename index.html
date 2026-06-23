@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>ClassPal - Core Framework</title>
+    <title>ClassPal - Core Framework Pro</title>
     <style>
         * { box-sizing: border-box; margin: 0; padding: 0; font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; }
         body { background-color: #f0f4f8; color: #333; height: 100vh; overflow: hidden; }
@@ -25,7 +25,8 @@
         /* --- MAIN SYSTEM LAYOUT --- */
         .sidebar { width: 260px; background-color: #3b71ca; color: white; display: flex; flex-direction: column; justify-content: space-between; padding: 20px; height: 100%; float: left; }
         .logo { font-size: 24px; font-weight: bold; margin-bottom: 3px; }
-        .user-profile-badge { font-size: 12px; background: rgba(255, 255, 255, 0.2); padding: 6px 10px; border-radius: 6px; margin-bottom: 20px; display: inline-block; word-break: break-all; }
+        .user-profile-badge { font-size: 12px; background: rgba(255, 255, 255, 0.2); padding: 6px 10px; border-radius: 6px; margin-bottom: 5px; display: inline-block; word-break: break-all; width: 100%; }
+        .status-select { width: 100%; padding: 6px; border-radius: 6px; background: #2a5298; color: white; border: 1px solid rgba(255,255,255,0.2); outline: none; font-size: 12px; margin-bottom: 15px; cursor: pointer; }
         .menu-item { padding: 11px 14px; margin-bottom: 6px; border-radius: 8px; cursor: pointer; transition: background 0.2s; font-weight: 500; display: flex; justify-content: space-between; align-items: center; }
         .menu-item:hover, .menu-item.active { background-color: #2a5298; }
         .logout-btn { background-color: #dc4c64; margin-top: 15px; font-weight: bold; }
@@ -56,19 +57,30 @@
         /* --- DISCORD WORKSPACE CORE STYLES --- */
         .server-room-layout, .clan-room-layout { display: flex; height: calc(100vh - 180px); background: white; border-radius: 12px; box-shadow: 0 4px 12px rgba(0,0,0,0.05); overflow: hidden; border: 1px solid #cbd5e1; }
         .server-chat-pane, .clan-chat-pane { flex: 1; display: flex; flex-direction: column; background: #fafafa; }
-        .server-sidebar-pane, .clan-sidebar-pane { width: 280px; background: #f1f5f9; border-left: 1px solid #cbd5e1; display: flex; flex-direction: column; padding: 15px; gap: 15px; }
+        .server-sidebar-pane, .clan-sidebar-pane { width: 280px; background: #f1f5f9; border-left: 1px solid #cbd5e1; display: flex; flex-direction: column; padding: 15px; gap: 15px; overflow-y: auto; }
         .server-sidebar-pane h4, .clan-sidebar-pane h4 { font-size: 13px; text-transform: uppercase; color: #475569; letter-spacing: 0.5px; border-bottom: 1px solid #cbd5e1; padding-bottom: 5px; }
+        
+        /* --- CHANNELS LINK BAR --- */
+        .channel-list { list-style: none; display: flex; flex-direction: column; gap: 4px; margin-bottom: 10px; }
+        .channel-item { padding: 6px 10px; border-radius: 6px; cursor: pointer; font-size: 14px; font-weight: 500; color: #475569; display: flex; align-items: center; gap: 6px; }
+        .channel-item:hover { background: #e2e8f0; color: #1e293b; }
+        .channel-item.active-channel { background: #3b71ca; color: white; }
+
         .roster-list { list-style: none; display: flex; flex-direction: column; gap: 6px; overflow-y: auto; flex: 1; }
-        .roster-item { display: flex; justify-content: space-between; align-items: center; font-size: 13px; font-weight: 500; background: white; padding: 6px 10px; border-radius: 6px; border: 1px solid #e2e8f0; line-height: 1.3; }
+        .roster-item { display: flex; flex-direction: column; gap: 4px; font-size: 13px; font-weight: 500; background: white; padding: 8px 10px; border-radius: 6px; border: 1px solid #e2e8f0; line-height: 1.3; }
+        .roster-actions { display: flex; gap: 4px; margin-top: 4px; }
+        
         .ban-mini-btn { background: #dc4c64; color: white; border: none; padding: 2px 6px; font-size: 11px; border-radius: 4px; cursor: pointer; font-weight: bold; }
         .ban-mini-btn:hover { background: #b3394b; }
+        .mod-mini-btn { background: #e4a11b; color: white; border: none; padding: 2px 6px; font-size: 11px; border-radius: 4px; cursor: pointer; font-weight: bold; }
+        .mute-mini-btn { background: #64748b; color: white; border: none; padding: 2px 6px; font-size: 11px; border-radius: 4px; cursor: pointer; font-weight: bold; }
         .server-select-dropdown { width: 100%; padding: 8px; border: 1px solid #cbd5e1; border-radius: 6px; outline: none; margin-bottom: 8px; font-size: 13px; }
 
         /* --- SPLIT ARCHITECTURE DIRECT MESSAGES --- */
         .dm-layout { display: flex; height: calc(100vh - 40px); margin: 20px; background: white; border-radius: 12px; box-shadow: 0 4px 12px rgba(0,0,0,0.05); overflow: hidden; }
         .dm-sidebar { width: 220px; background: #f1f5f9; border-right: 1px solid #cbd5e1; display: flex; flex-direction: column; }
         .dm-sidebar-header { padding: 15px; font-weight: bold; font-size: 14px; border-bottom: 1px solid #cbd5e1; color: #475569; background: #e2e8f0; }
-        .friend-thread-item { padding: 12px 15px; cursor: pointer; border-bottom: 1px solid #e2e8f0; font-weight: 500; font-size: 14px; display: flex; align-items: center; gap: 8px; transition: background 0.2s; }
+        .friend-thread-item { padding: 12px 15px; cursor: pointer; border-bottom: 1px solid #e2e8f0; font-weight: 500; font-size: 14px; display: flex; flex-direction: column; gap: 2px; transition: background 0.2s; }
         .friend-thread-item:hover { background: #e2e8f0; }
         .friend-thread-item.active-thread { background: #3b71ca; color: white; }
         .dm-window { flex: 1; display: flex; flex-direction: column; background: #fafafa; }
@@ -85,11 +97,15 @@
         .v-btn.disc-btn { background: #ef4444; color: white; }
 
         .chat-messages { flex: 1; padding: 20px; overflow-y: auto; display: flex; flex-direction: column; gap: 10px; }
-        .msg { max-width: 75%; padding: 10px 14px; border-radius: 12px; line-height: 1.4; font-size: 14px; }
+        .msg { max-width: 75%; padding: 10px 14px; border-radius: 12px; line-height: 1.4; font-size: 14px; position: relative; }
         .msg.incoming { background: #e2e8f0; align-self: flex-start; border-top-left-radius: 2px; }
         .msg.outgoing { background: #3b71ca; color: white; align-self: flex-end; border-top-right-radius: 2px; }
         .msg.sys-alert { background: #fee2e2; color: #991b1b; align-self: center; text-align: center; font-size: 12px; border-radius: 6px; border: 1px solid #fca5a5; max-width: 90%; }
         
+        .flag-btn { position: absolute; top: 4px; right: 8px; font-size: 11px; cursor: pointer; opacity: 0; transition: opacity 0.2s; background: rgba(0,0,0,0.05); padding: 2px 4px; border-radius: 4px; border: none; }
+        .msg:hover .flag-btn { opacity: 1; }
+        .msg.outgoing .flag-btn { display: none; }
+
         .chat-input-area { display: flex; padding: 15px; background: white; border-top: 1px solid #cbd5e1; gap: 10px; }
         .chat-input { flex: 1; padding: 10px; border: 1px solid #cbd5e1; border-radius: 6px; outline: none; }
         .send-btn { background: #3b71ca; color: white; border: none; padding: 0 20px; border-radius: 6px; cursor: pointer; font-weight: bold; }
@@ -102,6 +118,15 @@
         .btn-action.accept { background: #14a44d; color: white; }
         .btn-action.decline { background: #dc4c64; color: white; }
 
+        /* --- LEADERBOARDS & TASKS UI --- */
+        .clan-tab-bar { display: flex; border-bottom: 2px solid #e2e8f0; margin-bottom: 15px; gap: 10px; }
+        .clan-tab-item { padding: 8px 16px; cursor: pointer; font-weight: bold; font-size: 14px; color: #64748b; border-bottom: 2px solid transparent; margin-bottom: -2px; }
+        .clan-tab-item.active-clan-tab { color: #3b71ca; border-bottom-color: #3b71ca; }
+        .leaderboard-table { width: 100%; border-collapse: collapse; background: white; border-radius: 8px; overflow: hidden; border: 1px solid #e2e8f0; }
+        .leaderboard-table th, .leaderboard-table td { padding: 12px; text-align: left; border-bottom: 1px solid #e2e8f0; }
+        .leaderboard-table th { background: #f1f5f9; color: #475569; font-weight: 600; }
+        .goal-item { display: flex; align-items: center; gap: 10px; background: white; padding: 12px; border-radius: 8px; border: 1px solid #e2e8f0; margin-bottom: 8px; }
+
         /* --- MISC UI MODIFICATIONS --- */
         .log-terminal { background: #1e293b; color: #38bdf8; padding: 15px; border-radius: 12px; height: 400px; overflow-y: auto; font-family: monospace; font-size: 13px; box-shadow: inset 0 4px 8px rgba(0,0,0,0.4); }
         .log-line { margin-bottom: 6px; border-bottom: 1px solid rgba(255,255,255,0.04); padding-bottom: 2px; }
@@ -109,7 +134,7 @@
         .log-line.good { color: #4ade80; }
         
         .modal-overlay { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0, 0, 0, 0.6); display: none; align-items: center; justify-content: center; z-index: 1000; }
-        .modal-box { background: white; padding: 25px; border-radius: 14px; width: 90%; max-width: 400px; text-align: center; box-shadow: 0 10px 25px rgba(0, 0, 0, 0.3); max-height: 90vh; overflow-y: auto; }
+        .modal-box { background: white; padding: 25px; border-radius: 14px; width: 90%; max-width: 450px; text-align: center; box-shadow: 0 10px 25px rgba(0, 0, 0, 0.3); max-height: 90vh; overflow-y: auto; }
         .modal-box h3 { margin-bottom: 10px; color: #2a5298; }
         .modal-box p { font-size: 13px; color: #64748b; margin-bottom: 15px; }
         
@@ -121,10 +146,14 @@
 
         .locked-menu-disable { opacity: 0.35; cursor: not-allowed !important; }
         .notify-badge { background: #dc4c64; color: white; font-size: 10px; padding: 2px 6px; border-radius: 10px; font-weight: bold; }
+        .badge-pill { display: inline-block; background: #e0f2fe; color: #0369a1; padding: 2px 6px; border-radius: 4px; font-size: 11px; font-weight: bold; margin-right: 4px; margin-top: 4px; }
     </style>
 </head>
 <body>
 
+    <!-- ==========================================
+         LAYER 1: GATEWAY SIGN IN & SIGN UP PANELS
+         ========================================== -->
     <div id="login-page">
         <div class="login-card" id="authLoginForm">
             <div class="login-logo">ClassPal</div>
@@ -160,13 +189,22 @@
         </div>
     </div>
 
-
+    <!-- ==========================================
+         LAYER 2: CENTRAL SUITE RUNTIME APP ENVIRONMENT
+         ========================================== -->
     <div id="app-container" style="display:none;">
         
         <div class="sidebar">
             <div>
                 <div class="logo">ClassPal</div>
                 <div class="user-profile-badge" id="profileBadge">Loading profile...</div>
+                <div id="profileBadgesBox" style="margin-bottom: 10px;"></div>
+                
+                <select id="userPresenceStatusSelect" class="status-select" onchange="updatePresenceStatus()">
+                    <option value="🟢 Online">🟢 Online</option>
+                    <option value="🌙 Idle">🌙 Idle</option>
+                    <option value="🔴 Do Not Disturb">🔴 Do Not Disturb</option>
+                </select>
                 
                 <div class="menu-item active" onclick="switchPage('dashboard', this)">Dashboard</div>
                 <div class="menu-item" id="serversTabButton" onclick="switchPage('my-servers', this)">My Servers 🌐</div>
@@ -186,6 +224,7 @@
 
         <div class="main-content-pane">
             
+            <!-- VIEW 1: GENERAL CENTRAL HOME ENGINE -->
             <div id="dashboard" class="page-section active-page">
                 <div class="header">
                     <h2>Welcome to ClassPal Hub Dashboard!</h2>
@@ -197,29 +236,30 @@
                 </div>
                 <div class="grid">
                     <div class="card">
-                        <h3>💬 Private Communication Channels</h3>
-                        <p>Fully segmented point-to-point chat protocols configured to separate friend chat channels securely.</p>
+                        <h3>💬 Private Channels & Roles</h3>
+                        <p>Fully segmented chat systems configured to separate spaces securely with localized manager roles.</p>
                     </div>
                     <div class="card">
-                        <h3>🎙️ Secure Voice Streams</h3>
-                        <p>Simulated digital audio network links embedded directly over communication hubs.</p>
+                        <h3>🏆 Clan Scaling & Goals</h3>
+                        <p>Earn XP safely through communication checkpoints and clear structural teamwork assignments.</p>
                     </div>
                     <div class="card">
-                        <h3>⚡ Automated Filters</h3>
-                        <p>Smart real-time content analysis tracking dictionary infractions instantly.</p>
+                        <h3>🚩 Instant Safety Flags</h3>
+                        <p>Classmates can instantly report anomalies directly to the comprehensive parental supervisor hub logs.</p>
                     </div>
                 </div>
                 <div class="banner school-mode">
-                    <h3>🏫 Parent Controls & Constraints</h3>
-                    <p>Toggle restrictions, update profile security rules, or permanently remove profile registration files.</p>
+                    <h3>🏫 Parent Controls & Audit Matrix</h3>
+                    <p>Toggle restrictions, view explicit logged code infractions, or manage account password frameworks.</p>
                     <button class="action-btn" id="lockConfigBtn" onclick="openParentModal()">Open Parental Controls</button>
                 </div>
                 <div class="banner safety-strike">
                     <h3>⚠️ Safety Strike System (3-Chance Policy)</h3>
-                    <p>ClassPal has zero tolerance for bad links or harmful language. Every account has exactly 3 chances before lockdown deployment.</p>
+                    <p>ClassPal has zero tolerance for harmful communication instances. Triggering 3 counts deploys a permanent lock.</p>
                 </div>
             </div>
 
+            <!-- VIEW 2: SERVER HUB ARCHITECTURE -->
             <div id="my-servers" class="page-section">
                 <div id="serversBrowserListContainer">
                     <div class="header">
@@ -227,7 +267,8 @@
                         <button class="action-btn blue-btn" onclick="openServerModal()">+ Provision New Server Instance</button>
                     </div>
                     <div class="grid" id="serversContainerGrid">
-                        </div>
+                        <!-- Loaded dynamically -->
+                    </div>
                 </div>
 
                 <div id="activeServerRoomWorkspace" style="display:none; height:100%;">
@@ -243,10 +284,16 @@
                     </div>
 
                     <div class="server-room-layout">
+                        <!-- Left Subpanel: Multi-Channel Index -->
+                        <div style="width: 200px; background: #e2e8f0; border-right: 1px solid #cbd5e1; padding: 15px; display:flex; flex-direction:column; gap:10px;">
+                            <h4 style="font-size:11px; text-transform:uppercase; color:#475569; font-weight:bold;">📁 Channel Layers</h4>
+                            <ul class="channel-list" id="serverChannelSelectorList"></ul>
+                        </div>
+
                         <div class="server-chat-pane">
                             <div class="chat-messages" id="serverChatMessagesContainer"></div>
                             <div class="chat-input-area">
-                                <input type="text" id="serverChatMessageInputField" class="chat-input" placeholder="Send a clean, filtered message to the server channel..." onkeypress="handleServerChatKeyPress(event)">
+                                <input type="text" id="serverChatMessageInputField" class="chat-input" placeholder="Send a clean message to the channel..." onkeypress="handleServerChatKeyPress(event)">
                                 <button class="send-btn" onclick="transmitServerChatMessage()">Transmit</button>
                             </div>
                         </div>
@@ -254,7 +301,7 @@
                         <div class="server-sidebar-pane">
                             <div>
                                 <h4>🤝 Invite Friends</h4>
-                                <p style="font-size:11px; color:#64748b; margin:4px 0 8px 0;">Select an active classmate to grant access:</p>
+                                <p style="font-size:11px; color:#64748b; margin:4px 0 8px 0;">Grant infrastructure entry:</p>
                                 <select id="serverInviteFriendSelector" class="server-select-dropdown"></select>
                                 <button class="btn-action accept" style="width:100%;" onclick="executeServerFriendInvite()">Send Server Access Link</button>
                             </div>
@@ -268,7 +315,9 @@
                 </div>
             </div>
 
+            <!-- VIEW 3: CLAN SECTOR CONTROL SYSTEM -->
             <div id="clan-teams" class="page-section">
+                <!-- VIEW 3A: INITIAL CREATE CLAN STUDIO -->
                 <div id="clanSetupView">
                     <div class="header">
                         <h2>Clan Teams Studio 🎮</h2>
@@ -276,16 +325,16 @@
                     <div class="grid">
                         <div class="card" style="grid-column: span 2; border: 2px solid #3b71ca;">
                             <h3 style="color: #3b71ca; display: flex; align-items: center; gap: 6px;">✨ Create Your Own Clan</h3>
-                            <p style="font-size: 13px; color: #64748b; margin-bottom: 15px;">Establish a distinct brand name and set a group description to build a custom alliance network with classmates.</p>
+                            <p style="font-size: 13px; color: #64748b; margin-bottom: 15px;">Establish an alliance network to scale experience milestones together with classmates.</p>
                             
                             <div style="display: flex; flex-direction: column; gap: 12px; max-width: 550px;">
                                 <div>
                                     <label style="font-size: 12px; font-weight: bold; color: #475569; display: block; margin-bottom: 4px;">CLAN ALLIANCE TITLE NAME:</label>
-                                    <input type="text" id="clanNameInput" class="login-input" style="text-align: left; margin: 0;" placeholder="e.g. Pixel Coders Elite, Alpha Legends">
+                                    <input type="text" id="clanNameInput" class="login-input" style="text-align: left; margin: 0;" placeholder="e.g. Pixel Coders Elite">
                                 </div>
                                 <div>
                                     <label style="font-size: 12px; font-weight: bold; color: #475569; display: block; margin-bottom: 4px;">CLAN MOTTO / MISSION DESCRIPTION:</label>
-                                    <input type="text" id="clanDescInput" class="login-input" style="text-align: left; margin: 0;" placeholder="e.g. Playing sandbox games together and scripting codes!">
+                                    <input type="text" id="clanDescInput" class="login-input" style="text-align: left; margin: 0;" placeholder="e.g. Scaling blocks safely together!">
                                 </div>
                                 <button class="login-btn" style="margin: 5px 0 0 0; background: #14a44d;" onclick="createNewClan()">Found & Deploy Clan 🚀</button>
                             </div>
@@ -297,19 +346,27 @@
                     </div>
                 </div>
 
+                <!-- VIEW 3B: ACTIVE CLAN WORKSPACE DECK -->
                 <div id="activeClanWorkspace" style="display:none; height:100%;">
-                    <div class="header" style="margin-bottom: 15px;">
+                    <div class="header" style="margin-bottom: 10px;">
                         <div>
                             <h2 id="activeClanHeaderTitle">🎮 Loading Clan Deck...</h2>
                             <p id="activeClanSubtitleDesc" style="font-size:12px; color:#64748b; margin-top:2px;">Motto: Loading...</p>
+                            <div id="clanProgressionStatsBadge" style="margin-top:4px; font-weight:bold; font-size:13px; color:#14a44d;">Level: 1 | XP: 0</div>
                         </div>
                         <div style="display: flex; gap: 8px;">
                             <button class="btn-action decline" id="disbandClanBtn" style="display:none;" onclick="executeClanDeletion()">🔥 Disband Clan Alliance</button>
-                            <button class="btn-action decline" style="background:#64748b;" onclick="leaveClan()">🚪 Leave Clan Alliance</button>
+                            <button class="btn-action decline" style="background:#64748b;" onclick="leaveClan()">🚪 Leave Clan</button>
                         </div>
                     </div>
 
-                    <div class="clan-room-layout">
+                    <div class="clan-tab-bar">
+                        <div class="clan-tab-item active-clan-tab" id="clanTabChatBtn" onclick="switchClanViewTab('chat')">💬 Clan Chat Room</div>
+                        <div class="clan-tab-item" id="clanTabMetricsBtn" onclick="switchClanViewTab('metrics')">🏆 Leaderboards & Tasks</div>
+                    </div>
+
+                    <!-- CLAN VIEW SUBSECTION A: CHAT -->
+                    <div id="clanTabContentChat" class="clan-room-layout">
                         <div class="clan-chat-pane">
                             <div class="chat-messages" id="clanChatMessagesContainer"></div>
                             <div class="chat-input-area">
@@ -320,25 +377,49 @@
 
                         <div class="clan-sidebar-pane">
                             <div>
-                                <h4>⚡ Invite Players</h4>
-                                <p style="font-size:11px; color:#64748b; margin:4px 0 8px 0;">Recruit someone by typing their Tracking ID:</p>
+                                <h4>⚡ Recruit Players</h4>
+                                <p style="font-size:11px; color:#64748b; margin:4px 0 8px 0;">Type target Tracker ID:</p>
                                 <input type="text" id="clanInviteTargetInput" class="login-input" style="padding: 8px; font-size: 13px; margin-bottom: 8px; text-align: left;" placeholder="e.g. YUVAAN10">
                                 <button class="btn-action accept" style="width:100%;" onclick="sendClanInvite()">Dispatch Guild Invite</button>
                             </div>
-
                             <div style="flex:1; display:flex; flex-direction:column;">
                                 <h4>👥 People in Clan List</h4>
                                 <ul class="roster-list" id="clanRosterDataContainer" style="margin-top:10px;"></ul>
                             </div>
                         </div>
                     </div>
+
+                    <!-- CLAN VIEW SUBSECTION B: METRICS -->
+                    <div id="clanTabContentMetrics" style="display:none; background:white; border-radius:12px; padding:20px; border:1px solid #cbd5e1; height:calc(100vh - 230px); overflow-y:auto;">
+                        <div style="margin-bottom:25px;">
+                            <h3 style="color:#2a5298; margin-bottom:10px;">🏆 Global Clan Leaderboard rankings</h3>
+                            <table class="leaderboard-table">
+                                <thead>
+                                    <tr>
+                                        <th>Rank</th>
+                                        <th>Clan Name Matrix</th>
+                                        <th>Founder Node</th>
+                                        <th>Active Power Level</th>
+                                        <th>Accumulated XP</th>
+                                    </tr>
+                                </thead>
+                                <tbody id="clanLeaderboardTableBody"></tbody>
+                            </table>
+                        </div>
+                        <div>
+                            <h3 style="color:#2a5298; margin-bottom:4px;">🎯 Weekly Clan Milestone Objectives</h3>
+                            <p style="font-size:12px; color:#64748b; margin-bottom:15px;">Complete target items below to verify ecosystem stability. Founders can toggle state status.</p>
+                            <div id="clanMilestoneTasksWrapper"></div>
+                        </div>
+                    </div>
                 </div>
             </div>
 
+            <!-- VIEW 4: SEPARATED PRIVATE DIRECT MESSAGES CHANNELS -->
             <div id="direct-messages" class="page-section" style="padding:0;">
                 <div class="dm-layout">
                     <div class="dm-sidebar">
-                        <div class="dm-sidebar-header">Active Friends List</div>
+                        <div class="dm-sidebar-header">Active Friends Directory</div>
                         <div id="dmThreadsListWrapper" style="overflow-y:auto; flex:1;"></div>
                     </div>
                     <div class="dm-window" id="dmChatBodyPanel">
@@ -371,6 +452,7 @@
                 </div>
             </div>
 
+            <!-- VIEW 5: FRIENDS DIRECTORY INVITE LISTINGS -->
             <div id="add-friends-view" class="page-section">
                 <div class="header">
                     <h2>Manage Relationship Matrix Handshakes 🤝</h2>
@@ -389,6 +471,7 @@
                 </div>
             </div>
 
+            <!-- VIEW 6: LIVE AUDIT RUNTIME TELEMETRY LOGS -->
             <div id="safety-log" class="page-section">
                 <div class="header">
                     <h2>Security Operations Terminal Registry 📜</h2>
@@ -397,6 +480,7 @@
                 <div class="log-terminal" id="safetyLogTerminal"></div>
             </div>
 
+            <!-- VIEW 7: ABOUT METADATA SUMMARY -->
             <div id="about-section" class="page-section">
                 <div class="header">
                     <h2>About ClassPal Core Framework ℹ️</h2>
@@ -414,12 +498,21 @@
         </div>
     </div>
 
+    <!-- SYSTEM PARENT CONTROL MATRIX MODAL -->
     <div class="modal-overlay" id="parentModalOverlay">
         <div class="modal-box">
             <h3>Parental Security Controls 🔒</h3>
             <p id="parentModalDesc">Input the 4-digit Account Security PIN to toggle operational rules or configure account password keys.</p>
             <input type="password" id="parentPinInput" class="modal-input" placeholder="ENTER 4-DIGIT PIN" maxlength="4">
             
+            <!-- EXPLICIT VIOLATION AND FLAG AUDIT TELEMETRY LOGS -->
+            <div style="background:#f8fafc; border:1px solid #cbd5e1; border-radius:8px; padding:12px; margin-bottom:15px; text-align:left; max-height:180px; overflow-y:auto;">
+                <span style="font-size:11px; font-weight:bold; color:#475569; display:block; border-bottom:1px solid #cbd5e1; padding-bottom:3px; margin-bottom:6px;">🚨 SECURE CONTENT INFRACTION LOGS:</span>
+                <div id="parentInfractionLogsTargetBox" style="font-size:12px; color:#334155; display:flex; flex-direction:column; gap:4px;">
+                    <p style="color:#94a3b8; font-style:italic;">No behavioral flags registered on this profile network block.</p>
+                </div>
+            </div>
+
             <div style="background:#f1f5f9; padding:12px; border-radius:8px; margin-bottom:15px; text-align:left; display:none;" id="parentPasswordEditBox">
                 <label style="font-size:11px; font-weight:bold; color:#475569; display:block; margin-bottom:4px;">OVERWRITE CHILD ACCOUNT PASSWORD:</label>
                 <input type="text" id="parentNewUserPasswordInput" class="modal-input" style="margin:0; padding:8px; font-size:13px;" placeholder="Type new login password">
@@ -438,6 +531,7 @@
         </div>
     </div>
 
+    <!-- GENERIC INSTANCE BUILDER MODAL -->
     <div class="modal-overlay" id="serverModalOverlay">
         <div class="modal-box">
             <h3>Build New Infrastructure Server Node 🌐</h3>
@@ -450,20 +544,24 @@
         </div>
     </div>
 
-
+    <!-- ==========================================
+         LAYER 4: ACTIVE JAVASCRIPT LOCALDATABASE ROUTINES
+         ========================================== -->
     <script>
         const FILTER_DICTIONARY = ["STUPID", "DUMMY", "HATE", "TRASH", "FOOL", "SHUTUP"];
 
         let sessionUser = null;
         let activeChatRecipient = null;
         let activeServerId = null; 
+        let activeServerChannel = "general";
+        let activeClanTab = "chat";
         let isVoiceMuted = false;
 
         function initializeDatabaseSchema() {
             if (!localStorage.getItem('cp_users')) {
                 const prebuiltUsers = {
-                    "SVARNIT25": { id: "SVARNIT25", name: "Svarnit", pass: "1234", pin: "1234", strikes: 0, schoolMode: false, friends: ["YUVAAN10"], clan: "Pixel Coders Elite" },
-                    "YUVAAN10": { id: "YUVAAN10", name: "Yuvaan", pass: "1234", pin: "1234", strikes: 0, schoolMode: false, friends: ["SVARNIT25"], clan: "Pixel Coders Elite" }
+                    "SVARNIT25": { id: "SVARNIT25", name: "Svarnit", pass: "1234", pin: "1234", strikes: 0, schoolMode: false, friends: ["YUVAAN10"], clan: "Pixel Coders Elite", status: "🟢 Online", badges: ["🛡️ Safety Hero"], messageCount: 0, infractionHistory: [] },
+                    "YUVAAN10": { id: "YUVAAN10", name: "Yuvaan", pass: "1234", pin: "1234", strikes: 0, schoolMode: false, friends: ["SVARNIT25"], clan: "Pixel Coders Elite", status: "🟢 Online", badges: ["🛡️ Safety Hero"], messageCount: 0, infractionHistory: [] }
                 };
                 localStorage.setItem('cp_users', JSON.stringify(prebuiltUsers));
             }
@@ -472,14 +570,26 @@
             if (!localStorage.getItem('cp_clan_reqs')) localStorage.setItem('cp_clan_reqs', JSON.stringify([]));
             if (!localStorage.getItem('cp_clans')) {
                 const defaultClans = { 
-                    "Pixel Coders Elite": { name: "Pixel Coders Elite", owner: "SVARNIT25", desc: "Playing sandbox games together and scripting codes!", members: ["SVARNIT25", "YUVAAN10"] } 
+                    "Pixel Coders Elite": { 
+                        name: "Pixel Coders Elite", owner: "SVARNIT25", desc: "Playing sandbox games together and scripting codes!", members: ["SVARNIT25", "YUVAAN10"],
+                        xp: 40, level: 1, goals: [
+                            { id: 1, text: "Maintain 0 collective strikes on user blocks", completed: false },
+                            { id: 2, text: "Log 100 safe chat packet streams", completed: false }
+                        ]
+                    } 
                 };
                 localStorage.setItem('cp_clans', JSON.stringify(defaultClans));
             }
             if (!localStorage.getItem('cp_servers')) {
                 const defaultServers = [
-                    { id: "SRV_DEFAULT_MC", name: "🧱 Minecraft Builders Crew", owner: "SYSTEM", desc: "Official layout division sandbox channel.", members: ["SVARNIT25", "YUVAAN10"], banned: [] },
-                    { id: "SRV_DEFAULT_POKE", name: "⚡ Pokemon Battle Arena", owner: "SYSTEM", desc: "Card processing trades and challenge discussions.", members: ["SVARNIT25", "YUVAAN10"], banned: [] }
+                    { 
+                        id: "SRV_DEFAULT_MC", name: "🧱 Minecraft Builders Crew", owner: "SYSTEM", desc: "Official layout division sandbox channel.", members: ["SVARNIT25", "YUVAAN10"], banned: [], moderators: [], mutes: {},
+                        channels: ["general", "announcements", "gaming-lounge"] 
+                    },
+                    { 
+                        id: "SRV_DEFAULT_POKE", name: "⚡ Pokemon Battle Arena", owner: "SYSTEM", desc: "Card processing trades and challenge discussions.", members: ["SVARNIT25", "YUVAAN10"], banned: [], moderators: [], mutes: {},
+                        channels: ["general", "trading-floor"] 
+                    }
                 ];
                 localStorage.setItem('cp_servers', JSON.stringify(defaultServers));
             }
@@ -532,7 +642,7 @@
             if (users[id]) { alert("This specific user unique identifier code signature matches an existing node matrix registry."); return; }
             if (pin.length !== 4 || isNaN(pin)) { alert("Parent protection PIN configuration attributes must conform to a 4-digit number framework."); return; }
 
-            users[id] = { id: id, name: name, pass: pass, pin: pin, strikes: 0, schoolMode: false, friends: [], clan: "" };
+            users[id] = { id: id, name: name, pass: pass, pin: pin, strikes: 0, schoolMode: false, friends: [], clan: "", status: "🟢 Online", badges: ["🆕 Newbie"], messageCount: 0, infractionHistory: [] };
             dbSet('cp_users', users);
             alert("🎉 ACCOUNT NODE PROVISIONED SUCCESSFULLY: You can now access the interface via the login panel dashboard.");
             toggleAuthForms(false);
@@ -546,7 +656,9 @@
             sessionUser = users[sessionUser.id];
 
             document.getElementById('profileBadge').innerText = `${sessionUser.name} [ID: ${sessionUser.id}]`;
+            document.getElementById('userPresenceStatusSelect').value = sessionUser.status || "🟢 Online";
             
+            renderBadges();
             exitActiveServerView(); 
             updateSecurityBanners();
             renderServersGrid();
@@ -555,6 +667,51 @@
             renderFriendRequests();
             
             printTelemetry(`User context workspace initiated for node: ${sessionUser.id}`, "good");
+        }
+
+        function updatePresenceStatus() {
+            const status = document.getElementById('userPresenceStatusSelect').value;
+            const users = dbGet('cp_users');
+            users[sessionUser.id].status = status;
+            dbSet('cp_users', users);
+            sessionUser = users[sessionUser.id];
+            printTelemetry(`User presence vector updated to: ${status}`);
+            renderDmThreads();
+            if(activeServerId) syncServerUIElements();
+            if(sessionUser.clan) renderClanWorkspace();
+        }
+
+        function renderBadges() {
+            const box = document.getElementById('profileBadgesBox');
+            box.innerHTML = '';
+            if(sessionUser.badges) {
+                sessionUser.badges.forEach(b => {
+                    const span = document.createElement('span');
+                    span.className = 'badge-pill';
+                    span.innerText = b;
+                    box.appendChild(span);
+                });
+            }
+        }
+
+        function processUserMessageTracking() {
+            const users = dbGet('cp_users');
+            users[sessionUser.id].messageCount += 1;
+            
+            // Dynamic badge awards
+            let currentBadges = users[sessionUser.id].badges || [];
+            if(users[sessionUser.id].messageCount >= 10 && !currentBadges.includes("💬 Chat Master")) {
+                currentBadges.push("💬 Chat Master");
+                printTelemetry(`Milestone Met: [${sessionUser.id}] unlocked 'Chat Master' Badge!`, "good");
+            }
+            if(users[sessionUser.id].strikes === 0 && !currentBadges.includes("🛡️ Safety Hero")) {
+                currentBadges.push("🛡️ Safety Hero");
+            }
+            
+            users[sessionUser.id].badges = currentBadges;
+            dbSet('cp_users', users);
+            sessionUser = users[sessionUser.id];
+            renderBadges();
         }
 
         function updateSecurityBanners() {
@@ -605,6 +762,23 @@
             document.getElementById('parentPasswordEditBox').style.display = 'none';
             document.getElementById('parentDeleteAccountBox').style.display = 'none';
             document.getElementById('parentToggleModeBtn').innerText = sessionUser.schoolMode ? "Disable School Mode" : "Enable School Mode";
+            
+            // Load explicit infraction logs
+            const box = document.getElementById('parentInfractionLogsTargetBox');
+            box.innerHTML = '';
+            if(sessionUser.infractionHistory && sessionUser.infractionHistory.length > 0) {
+                sessionUser.infractionHistory.forEach(inf => {
+                    const div = document.createElement('div');
+                    div.style.padding = '5px';
+                    div.style.background = '#fee2e2';
+                    div.style.borderRadius = '4px';
+                    div.style.borderLeft = '3px solid #dc4c64';
+                    div.innerHTML = `<strong>[${inf.type}]</strong> Enclave: <code>${inf.scope}</code><br><span style="color:#991b1b;">Scrubbed Packet: "${inf.payload}"</span> <span style="font-size:10px; color:#64748b; float:right;">${inf.timestamp}</span>`;
+                    box.appendChild(div);
+                });
+            } else {
+                box.innerHTML = '<p style="color:#94a3b8; font-style:italic;">No behavioral flags registered on this profile network block.</p>';
+            }
         }
 
         function closeParentModal() {
@@ -672,6 +846,7 @@
             servers.forEach(srv => {
                 if (srv.members) srv.members = srv.members.filter(m => m !== targetId);
                 if (srv.banned) srv.banned = srv.banned.filter(b => b !== targetId);
+                if (srv.moderators) srv.moderators = srv.moderators.filter(m => m !== targetId);
             });
 
             friendReqs = friendReqs.filter(r => r.from !== targetId && r.to !== targetId);
@@ -714,7 +889,10 @@
                 owner: sessionUser.id,
                 desc: `Custom sandbox cluster created by ${sessionUser.name}.`,
                 members: [sessionUser.id], 
-                banned: []
+                banned: [],
+                moderators: [],
+                mutes: {},
+                channels: ["general", "announcements", "gaming-lounge"]
             });
             
             dbSet('cp_servers', servers);
@@ -740,7 +918,7 @@
                     <p>${srv.desc}</p>
                     <span style="font-size:11px; color:#94a3b8; display:block; margin: 8px 0;">Manager Node: ${srv.owner}</span>
                     <button class="action-btn server-enter-btn" onclick="tryAccessServer('${srv.id}')">
-                        ${isJoined ? 'Enter Channel 🚀' : 'Join Server Vector ✨'}
+                        ${isJoined ? 'Enter Channel 🚀' : 'Join Server Vector Sky'}
                     </button>
                 `;
                 grid.appendChild(card);
@@ -762,6 +940,7 @@
                 dbSet('cp_servers', servers);
             }
 
+            activeServerChannel = "general";
             launchActiveServerRoom(targetSrv);
         }
 
@@ -772,7 +951,6 @@
             document.getElementById('activeServerHeaderTitle').innerText = serverObj.name;
             document.getElementById('activeServerMetaSubtitle').innerText = `Unique Zone ID: ${serverObj.id} | Server Founder Node: ${serverObj.owner}`;
             
-            // Toggle Delete Server Button Visibility based on Ownership
             const deleteBtn = document.getElementById('deleteServerBtn');
             if (serverObj.owner === sessionUser.id) {
                 deleteBtn.style.display = 'inline-block';
@@ -781,37 +959,6 @@
             }
 
             syncServerUIElements();
-        }
-
-        function executeServerDeletion() {
-            if (!activeServerId) return;
-            
-            const servers = dbGet('cp_servers');
-            const matchIndex = servers.findIndex(s => s.id === activeServerId);
-            if (matchIndex === -1) return;
-            
-            if (servers[matchIndex].owner !== sessionUser.id) {
-                alert("❌ ACCESS DENIED: Only the designated Owner Node can delete this server matrix.");
-                return;
-            }
-
-            const confirmation = confirm("⚠️ CRITICAL WARNING:\nAre you absolutely certain you want to permanently delete this infrastructure server container? All message data and member linkages will be destroyed instantly.");
-            if (!confirmation) return;
-
-            const serverLabelName = servers[matchIndex].name;
-
-            // Purge the structural server tracking record
-            servers.splice(matchIndex, 1);
-            dbSet('cp_servers', servers);
-
-            // Wipe out associated system chat records
-            const chats = dbGet('cp_chats');
-            delete chats[`SERVER_${activeServerId}`];
-            dbSet('cp_chats', chats);
-
-            printTelemetry(`Permanently expunged Server Instance Node: ${activeServerId} ("${serverLabelName}")`, "error");
-            alert("🔥 Server architecture completely dropped and wiped from the registry database.");
-            exitActiveServerView();
         }
 
         function exitActiveServerView() {
@@ -823,6 +970,11 @@
             renderServersGrid();
         }
 
+        function changeServerChannel(chanName) {
+            activeServerChannel = chanName;
+            syncServerUIElements();
+        }
+
         function syncServerUIElements() {
             if (!activeServerId) return;
             const servers = dbGet('cp_servers');
@@ -831,40 +983,91 @@
 
             const users = dbGet('cp_users');
 
-            // Chat Renderer
+            // Render Channels List
+            const chanContainer = document.getElementById('serverChannelSelectorList');
+            chanContainer.innerHTML = '';
+            const channelsList = srv.channels || ["general"];
+            channelsList.forEach(ch => {
+                const li = document.createElement('li');
+                li.className = `channel-item ${activeServerChannel === ch ? 'active-channel' : ''}`;
+                li.innerHTML = `# ${ch}`;
+                li.onclick = () => changeServerChannel(ch);
+                chanContainer.appendChild(li);
+            });
+
+            // Chat Messages Renderer
             const msgBox = document.getElementById('serverChatMessagesContainer');
             msgBox.innerHTML = '';
             const chats = dbGet('cp_chats');
-            const serverChatLogKey = `SERVER_${srv.id}`;
+            const serverChatLogKey = `SERVER_${srv.id}_${activeServerChannel}`;
             const stream = chats[serverChatLogKey] || [];
             
-            stream.forEach(m => {
+            stream.forEach((m, mIdx) => {
                 const item = document.createElement('div');
                 if (m.type === 'sys') {
                     item.className = 'msg sys-alert';
                     item.innerText = m.txt;
                 } else {
                     item.className = m.sender === sessionUser.id ? 'msg outgoing' : 'msg incoming';
-                    item.innerHTML = `<strong style="font-size:11px; display:block; opacity:0.8; margin-bottom:2px;">${m.senderName} (${m.sender})</strong>${m.txt}`;
+                    item.innerHTML = `
+                        <strong style="font-size:11px; display:block; opacity:0.8; margin-bottom:2px;">${m.senderName} (${m.sender})</strong>
+                        ${m.txt}
+                        <button class="flag-btn" onclick="executeFlagMessage('SERVER', '${serverChatLogKey}', '${m.sender}', ${mIdx})">🚩 Flag</button>
+                    `;
                 }
                 msgBox.appendChild(item);
             });
             msgBox.scrollTop = msgBox.scrollHeight;
 
-            // People in Server List Roster Renderer
+            // People inside Server Roster Renderer
             const rosterContainer = document.getElementById('serverRosterDataContainer');
             rosterContainer.innerHTML = '';
+            
+            const isMeOwner = sessionUser.id === srv.owner;
+            const isMeMod = srv.moderators && srv.moderators.includes(sessionUser.id);
+
             srv.members.forEach(mId => {
                 const li = document.createElement('li');
                 li.className = 'roster-item';
                 const pMatch = users[mId];
-                const cleanDisplayName = pMatch ? `${pMatch.name} [${mId}]` : `Offline Node [${mId}]`;
+                
+                let presence = "⚪ Offline";
+                if(pMatch) presence = pMatch.status || "🟢 Online";
+                
+                const cleanDisplayName = pMatch ? `${pMatch.name} [${mId}] (${presence})` : `Offline Node [${mId}]`;
+                
+                const isTargetOwner = mId === srv.owner;
+                const isTargetMod = srv.moderators && srv.moderators.includes(mId);
+                
+                let subLabel = "Member";
+                if(isTargetOwner) subLabel = "FOUNDER";
+                else if(isTargetMod) subLabel = "MODERATOR";
 
-                let banBtn = '';
-                if (sessionUser.id === srv.owner && mId !== sessionUser.id) {
-                    banBtn = `<button class="ban-mini-btn" onclick="executeServerBanOperation('${mId}')">Ban 🚫</button>`;
+                // Authorization evaluation matrices
+                let actionButtons = '';
+                if (mId !== sessionUser.id && !isTargetOwner) {
+                    if (isMeOwner) {
+                        actionButtons += `<button class="ban-mini-btn" onclick="executeServerBanOperation('${mId}')">Ban 🚫</button>`;
+                        if(!isTargetMod) {
+                            actionButtons += `<button class="mod-mini-btn" onclick="promoteServerMod('${mId}')">Promote ⚡</button>`;
+                        }
+                        actionButtons += `<button class="mute-mini-btn" onclick="executeServerMute('${mId}')">Mute 🤐</button>`;
+                    } else if (isMeMod) {
+                        actionButtons += `<button class="ban-mini-btn" onclick="executeServerBanOperation('${mId}')">Ban 🚫</button>`;
+                        actionButtons += `<button class="mute-mini-btn" onclick="executeServerMute('${mId}')">Mute 🤐</button>`;
+                    }
                 }
-                li.innerHTML = `<span>👤 <strong>${cleanDisplayName}</strong> ${mId === srv.owner ? '<b style="color:#e4a11b;">[OWNER]</b>' : ''}</span> ${banBtn}`;
+
+                // Append mute status marker visually if active
+                let muteMarker = "";
+                if(srv.mutes && srv.mutes[mId] && Date.now() < srv.mutes[mId]) {
+                    muteMarker = " <b style='color:#dc4c64;'>[MUTED]</b>";
+                }
+
+                li.innerHTML = `
+                    <div><strong>${cleanDisplayName}</strong> <b style="color:#2a5298; font-size:10px;">[${subLabel}]</b>${muteMarker}</div>
+                    <div class="roster-actions">${actionButtons}</div>
+                `;
                 rosterContainer.appendChild(li);
             });
 
@@ -873,7 +1076,7 @@
             dropdown.innerHTML = '';
             let inviteCount = 0;
             sessionUser.friends.forEach(fId => {
-                if (!srv.members.includes(fId) && !srv.banned.includes(fId)) {
+                if (!srv.members.includes(fId) && (!srv.banned || !srv.banned.includes(fId))) {
                     const opt = document.createElement('option');
                     opt.value = fId;
                     opt.innerText = users[fId] ? `${users[fId].name} (${fId})` : fId;
@@ -882,6 +1085,38 @@
                 }
             });
             if(inviteCount === 0) dropdown.innerHTML = `<option value="">No friends available to add</option>`;
+        }
+
+        function promoteServerMod(targetId) {
+            const servers = dbGet('cp_servers');
+            const idx = servers.findIndex(s => s.id === activeServerId);
+            if(idx > -1) {
+                if(!servers[idx].moderators) servers[idx].moderators = [];
+                servers[idx].moderators.push(targetId);
+                dbSet('cp_servers', servers);
+                printTelemetry(`Promoted node [${targetId}] to Moderator on server container [${activeServerId}]`);
+                syncServerUIElements();
+            }
+        }
+
+        function executeServerMute(targetId) {
+            const servers = dbGet('cp_servers');
+            const idx = servers.findIndex(s => s.id === activeServerId);
+            if(idx > -1) {
+                if(!servers[idx].mutes) servers[idx].mutes = {};
+                // Configure temporary 5 minute network lock timestamp
+                servers[idx].mutes[targetId] = Date.now() + (5 * 60 * 1000);
+                dbSet('cp_servers', servers);
+                printTelemetry(`Executed temporary text mute lock on player node [${targetId}] for 5 minutes.`, "error");
+                
+                const chats = dbGet('cp_chats');
+                const serverChatLogKey = `SERVER_${activeServerId}_${activeServerChannel}`;
+                if (!chats[serverChatLogKey]) chats[serverChatLogKey] = [];
+                chats[serverChatLogKey].push({ type: 'sys', txt: `🤐 SECURITY INFRACTION: User [${targetId}] has been temporarily muted for 5 minutes.` });
+                dbSet('cp_chats', chats);
+
+                syncServerUIElements();
+            }
         }
 
         function executeServerFriendInvite() {
@@ -896,9 +1131,9 @@
                 dbSet('cp_servers', servers);
                 
                 const chats = dbGet('cp_chats');
-                const serverChatLogKey = `SERVER_${activeServerId}`;
+                const serverChatLogKey = `SERVER_${activeServerId}_${activeServerChannel}`;
                 if (!chats[serverChatLogKey]) chats[serverChatLogKey] = [];
-                chats[serverChatLogKey].push({ type: 'sys', txt: `✨ SYSTEM NOTICE: User node [${selectedFriendId}] entered.` });
+                chats[serverChatLogKey].push({ type: 'sys', txt: `✨ SYSTEM NOTICE: User node [${selectedFriendId}] entered the vector.` });
                 dbSet('cp_chats', chats);
 
                 syncServerUIElements();
@@ -918,9 +1153,9 @@
                 dbSet('cp_servers', servers);
 
                 const chats = dbGet('cp_chats');
-                const serverChatLogKey = `SERVER_${activeServerId}`;
+                const serverChatLogKey = `SERVER_${activeServerId}_${activeServerChannel}`;
                 if (!chats[serverChatLogKey]) chats[serverChatLogKey] = [];
-                chats[serverChatLogKey].push({ type: 'sys', txt: `🚫 ADMINISTRATIVE BAN: [${targetMemberId}] was blacklisted.` });
+                chats[serverChatLogKey].push({ type: 'sys', txt: `🚫 ADMINISTRATIVE BAN: [${targetMemberId}] was blacklisted out of this framework instance.` });
                 dbSet('cp_chats', chats);
 
                 syncServerUIElements();
@@ -932,14 +1167,22 @@
             const textContent = input.value.trim();
             if (!textContent || !activeServerId) return;
 
+            const servers = dbGet('cp_servers');
+            const srv = servers.find(s => s.id === activeServerId);
+            if(srv && srv.mutes && srv.mutes[sessionUser.id] && Date.now() < srv.mutes[sessionUser.id]) {
+                alert("🤐 Mute constraint active. You cannot dispatch messages to this workspace right now.");
+                return;
+            }
+
             const chats = dbGet('cp_chats');
-            const serverChatLogKey = `SERVER_${activeServerId}`;
+            const serverChatLogKey = `SERVER_${activeServerId}_${activeServerChannel}`;
             if (!chats[serverChatLogKey]) chats[serverChatLogKey] = [];
 
             if (checkContentSafety(textContent)) {
                 handleContentInfraction(chats, serverChatLogKey, textContent);
             } else {
                 chats[serverChatLogKey].push({ sender: sessionUser.id, senderName: sessionUser.name, type: 'chat', txt: textContent });
+                processUserMessageTracking();
             }
             dbSet('cp_chats', chats);
             input.value = '';
@@ -947,6 +1190,40 @@
         }
 
         function handleServerChatKeyPress(e) { if (e.key === 'Enter') transmitServerChatMessage(); }
+
+        function executeServerDeletion() {
+            if (!activeServerId) return;
+            
+            const servers = dbGet('cp_servers');
+            const matchIndex = servers.findIndex(s => s.id === activeServerId);
+            if (matchIndex === -1) return;
+            
+            if (servers[matchIndex].owner !== sessionUser.id) {
+                alert("❌ ACCESS DENIED: Only the designated Owner Node can delete this server matrix.");
+                return;
+            }
+
+            const confirmation = confirm("⚠️ CRITICAL WARNING:\nAre you absolutely certain you want to permanently delete this infrastructure server container? All message data and member linkages will be destroyed instantly.");
+            if (!confirmation) return;
+
+            const serverLabelName = servers[matchIndex].name;
+            const targetChans = servers[matchIndex].channels || ["general"];
+
+            // Wipe out associated system multi-channel chat records
+            const chats = dbGet('cp_chats');
+            targetChans.forEach(ch => {
+                delete chats[`SERVER_${activeServerId}_${ch}`];
+            });
+            dbSet('cp_chats', chats);
+
+            // Purge the structural server tracking record
+            servers.splice(matchIndex, 1);
+            dbSet('cp_servers', servers);
+
+            printTelemetry(`Permanently expunged Server Instance Node: ${activeServerId} ("${serverLabelName}")`, "error");
+            alert("🔥 Server architecture completely dropped and wiped from the registry database.");
+            exitActiveServerView();
+        }
 
 
         /* --- CLAN CREATION & WORKSPACE STUDIO ENGINE --- */
@@ -959,12 +1236,17 @@
             const clans = dbGet('cp_clans');
             if (clans[name]) { alert("❌ Conflict: This clan name identifier is already claimed inside the database index."); return; }
             
-            // Build the new custom clan payload struct
             clans[name] = { 
                 name: name, 
                 owner: sessionUser.id, 
                 desc: description,
-                members: [sessionUser.id] 
+                members: [sessionUser.id],
+                xp: 0,
+                level: 1,
+                goals: [
+                    { id: 1, text: "Maintain 0 collective strikes on user blocks", completed: false },
+                    { id: 2, text: "Log 100 safe chat packet streams", completed: false }
+                ]
             };
             dbSet('cp_clans', clans);
             
@@ -980,24 +1262,88 @@
             printTelemetry(`Founded and initialized custom clan alliance: "${name}"`, "good");
         }
 
-        function sendClanInvite() {
-            const targetId = document.getElementById('clanInviteTargetInput').value.trim().toUpperCase();
-            const users = dbGet('cp_users');
+        function switchClanViewTab(tabId) {
+            activeClanTab = tabId;
+            document.getElementById('clanTabChatBtn').className = `clan-tab-item ${tabId === 'chat' ? 'active-clan-tab' : ''}`;
+            document.getElementById('clanTabMetricsBtn').className = `clan-tab-item ${tabId === 'metrics' ? 'active-clan-tab' : ''}`;
             
-            if (!sessionUser.clan) { alert("You don't own an active clan base."); return; }
-            if (!targetId || !users[targetId]) { alert("Target tracking user not discovered."); return; }
-            
-            const reqs = dbGet('cp_clan_reqs');
-            if (reqs.some(r => r.fromClan === sessionUser.clan && r.toUser === targetId)) {
-                alert("Invitation track already outstanding targeting this classmate.");
-                return;
+            if(tabId === 'chat') {
+                document.getElementById('clanTabContentChat').style.display = 'flex';
+                document.getElementById('clanTabContentMetrics').style.display = 'none';
+            } else {
+                document.getElementById('clanTabContentChat').style.display = 'none';
+                document.getElementById('clanTabContentMetrics').style.display = 'block';
+                renderClanLeaderboardsAndTasks();
             }
+        }
+
+        function renderClanLeaderboardsAndTasks() {
+            const clans = dbGet('cp_clans');
             
-            reqs.push({ fromClan: sessionUser.clan, fromUser: sessionUser.id, toUser: targetId });
-            dbSet('cp_clan_reqs', reqs);
-            
-            document.getElementById('clanInviteTargetInput').value = '';
-            alert(`Handshake guild invitation cast out to [${targetId}]!`);
+            // Build Ranking Analytics Array
+            const sortedClans = Object.values(clans).sort((a,b) => {
+                if(b.level !== a.level) return b.level - a.level;
+                return b.xp - a.xp;
+            });
+
+            const tbody = document.getElementById('clanLeaderboardTableBody');
+            tbody.innerHTML = '';
+            sortedClans.forEach((c, idx) => {
+                const tr = document.createElement('tr');
+                tr.innerHTML = `
+                    <td><strong>#${idx+1}</strong></td>
+                    <td><b>${c.name}</b></td>
+                    <td><code>${c.owner}</code></td>
+                    <td><span class="badge" style="background:#3b71ca; padding:3px 8px;">Lvl ${c.level}</span></td>
+                    <td><span style="color:#14a44d; font-weight:bold;">${c.xp} XP</span></td>
+                `;
+                tbody.appendChild(tr);
+            });
+
+            // Build Tasks UI
+            const wrapper = document.getElementById('clanMilestoneTasksWrapper');
+            wrapper.innerHTML = '';
+            const myClan = clans[sessionUser.clan];
+            if(myClan && myClan.goals) {
+                const isOwner = sessionUser.id === myClan.owner;
+                myClan.goals.forEach((g, idx) => {
+                    const item = document.createElement('div');
+                    item.className = 'goal-item';
+                    item.innerHTML = `
+                        <input type="checkbox" id="goal_check_${g.id}" ${g.completed ? 'checked' : ''} ${!isOwner ? 'disabled' : ''} onchange="toggleClanGoalCompletion(${g.id})">
+                        <label for="goal_check_${g.id}" style="${g.completed ? 'text-decoration: line-through; color: #94a3b8;' : 'font-weight:500;'}">${g.text}</label>
+                    `;
+                    wrapper.appendChild(item);
+                });
+            }
+        }
+
+        function toggleClanGoalCompletion(goalId) {
+            const clans = dbGet('cp_clans');
+            const myClan = clans[sessionUser.clan];
+            if(myClan && myClan.owner === sessionUser.id) {
+                const goal = myClan.goals.find(g => g.id === goalId);
+                if(goal) {
+                    goal.completed = !goal.completed;
+                    if(goal.completed) {
+                        myClan.xp += 50; // Grant bonus milestone reward points
+                        printTelemetry(`Goal Completed! Clan achieved 50 bonus tracking points.`, "good");
+                    } else {
+                        myClan.xp = Math.max(0, myClan.xp - 50);
+                    }
+                    
+                    // Evaluate scaling levels
+                    if(myClan.xp >= myClan.level * 100) {
+                        myClan.xp -= (myClan.level * 100);
+                        myClan.level += 1;
+                        printTelemetry(`👑 CLAN LEVEL EVOLUTION: Clan scaled to Power Level ${myClan.level}!`, "good");
+                    }
+
+                    dbSet('cp_clans', clans);
+                    document.getElementById('clanProgressionStatsBadge').innerText = `Level: ${myClan.level} | XP: ${myClan.xp}`;
+                    renderClanLeaderboardsAndTasks();
+                }
+            }
         }
 
         function renderClanWorkspace() {
@@ -1015,8 +1361,8 @@
                 const clan = clans[currentClanName];
                 document.getElementById('activeClanHeaderTitle').innerText = `🛡️ Clan Workspace: ${clan.name}`;
                 document.getElementById('activeClanSubtitleDesc').innerText = `Motto: ${clan.desc || 'No motto configured.'}`;
+                document.getElementById('clanProgressionStatsBadge').innerText = `Level: ${clan.level || 1} | XP: ${clan.xp || 0}`;
 
-                // Toggle Disband Clan Button Visibility based on Ownership
                 const disbandBtn = document.getElementById('disbandClanBtn');
                 if (clan.owner === sessionUser.id) {
                     disbandBtn.style.display = 'inline-block';
@@ -1031,7 +1377,8 @@
                     const li = document.createElement('li');
                     li.className = 'roster-item';
                     const mProfile = users[mId];
-                    const dynamicDisplayName = mProfile ? `${mProfile.name} [${mId}]` : mId;
+                    const presence = mProfile ? mProfile.status || "🟢 Online" : "⚪ Offline";
+                    const dynamicDisplayName = mProfile ? `${mProfile.name} [${mId}] (${presence})` : mId;
                     li.innerHTML = `<span>👤 <strong>${dynamicDisplayName}</strong> ${mId === clan.owner ? '<b style="color:#e4a11b;">[FOUNDER]</b>' : ''}</span>`;
                     rosterContainer.appendChild(li);
                 });
@@ -1043,14 +1390,18 @@
                 const clanChatLogKey = `CLAN_${clan.name}`;
                 const stream = chats[clanChatLogKey] || [];
 
-                stream.forEach(m => {
+                stream.forEach((m, mIdx) => {
                     const item = document.createElement('div');
                     if (m.type === 'sys') {
                         item.className = 'msg sys-alert';
                         item.innerText = m.txt;
                     } else {
                         item.className = m.sender === sessionUser.id ? 'msg outgoing' : 'msg incoming';
-                        item.innerHTML = `<strong style="font-size:11px; display:block; opacity:0.8; margin-bottom:2px;">${m.senderName} (${m.sender})</strong>${m.txt}`;
+                        item.innerHTML = `
+                            <strong style="font-size:11px; display:block; opacity:0.8; margin-bottom:2px;">${m.senderName} (${m.sender})</strong>
+                            ${m.txt}
+                            <button class="flag-btn" onclick="executeFlagMessage('CLAN', '${clanChatLogKey}', '${m.sender}', ${mIdx})">🚩 Flag</button>
+                        `;
                     }
                     msgBox.appendChild(item);
                 });
@@ -1086,6 +1437,62 @@
                 }
             }
         }
+
+        function sendClanInvite() {
+            const targetId = document.getElementById('clanInviteTargetInput').value.trim().toUpperCase();
+            const users = dbGet('cp_users');
+            
+            if (!sessionUser.clan) { alert("You don't own an active clan base."); return; }
+            if (!targetId || !users[targetId]) { alert("Target tracking user not discovered."); return; }
+            
+            const reqs = dbGet('cp_clan_reqs');
+            if (reqs.some(r => r.fromClan === sessionUser.clan && r.toUser === targetId)) {
+                alert("Invitation track already outstanding targeting this classmate.");
+                return;
+            }
+            
+            reqs.push({ fromClan: sessionUser.clan, fromUser: sessionUser.id, toUser: targetId });
+            dbSet('cp_clan_reqs', reqs);
+            
+            document.getElementById('clanInviteTargetInput').value = '';
+            alert(`Handshake guild invitation cast out to [${targetId}]!`);
+        }
+
+        function transmitClanChatMessage() {
+            const input = document.getElementById('clanChatMessageInputField');
+            const textContent = input.value.trim();
+            if (!textContent || !sessionUser.clan) return;
+
+            const chats = dbGet('cp_chats');
+            const clanChatLogKey = `CLAN_${sessionUser.clan}`;
+            if (!chats[clanChatLogKey]) chats[clanChatLogKey] = [];
+
+            if (checkContentSafety(textContent)) {
+                handleContentInfraction(chats, clanChatLogKey, textContent);
+            } else {
+                chats[clanChatLogKey].push({ sender: sessionUser.id, senderName: sessionUser.name, type: 'chat', txt: textContent });
+                processUserMessageTracking();
+                
+                // Award experience point allocations for secure communication interactions
+                const clans = dbGet('cp_clans');
+                const clan = clans[sessionUser.clan];
+                if(clan) {
+                    clan.xp = (clan.xp || 0) + 4;
+                    if(clan.xp >= (clan.level * 100)) {
+                        clan.xp -= (clan.level * 100);
+                        clan.level = (clan.level || 1) + 1;
+                        chats[clanChatLogKey].push({ type: 'sys', txt: `🏆 CLAN PROGRESSION LAYER UP: Alliances scaled up to level ${clan.level}!` });
+                    }
+                    dbSet('cp_clans', clans);
+                }
+            }
+
+            dbSet('cp_chats', chats);
+            input.value = '';
+            renderClanWorkspace();
+        }
+
+        function handleClanChatKeyPress(e) { if (e.key === 'Enter') transmitClanChatMessage(); }
 
         function executeClanDeletion() {
             const currentClanName = sessionUser.clan;
@@ -1127,28 +1534,6 @@
             alert(`🔥 Clan alliance "${currentClanName}" has been successfully disbanded.`);
             renderClanWorkspace();
         }
-
-        function transmitClanChatMessage() {
-            const input = document.getElementById('clanChatMessageInputField');
-            const textContent = input.value.trim();
-            if (!textContent || !sessionUser.clan) return;
-
-            const chats = dbGet('cp_chats');
-            const clanChatLogKey = `CLAN_${sessionUser.clan}`;
-            if (!chats[clanChatLogKey]) chats[clanChatLogKey] = [];
-
-            if (checkContentSafety(textContent)) {
-                handleContentInfraction(chats, clanChatLogKey, textContent);
-            } else {
-                chats[clanChatLogKey].push({ sender: sessionUser.id, senderName: sessionUser.name, type: 'chat', txt: textContent });
-            }
-
-            dbSet('cp_chats', chats);
-            input.value = '';
-            renderClanWorkspace();
-        }
-
-        function handleClanChatKeyPress(e) { if (e.key === 'Enter') transmitClanChatMessage(); }
 
         function leaveClan() {
             if(!sessionUser.clan) return;
@@ -1216,6 +1601,31 @@
             if (realIdx > -1) reqs.splice(realIdx, 1);
             dbSet('cp_clan_reqs', reqs);
             renderClanWorkspace();
+        }
+
+
+        /* --- PEER LINK FLAGGING MECHANICS --- */
+        function executeFlagMessage(scopeType, contextKey, authorId, indexId) {
+            const chats = dbGet('cp_chats');
+            const targetStream = chats[contextKey];
+            if(!targetStream || !targetStream[indexId]) return;
+            
+            const badPacketText = targetStream[indexId].txt;
+            
+            // Route explicit contextual reporting data directly inside child profiling history fields
+            const users = dbGet('cp_users');
+            if(users[authorId]) {
+                if(!users[authorId].infractionHistory) users[authorId].infractionHistory = [];
+                users[authorId].infractionHistory.push({
+                    type: "PEER_FLAG_REPORT",
+                    scope: scopeType + " // " + contextKey,
+                    payload: badPacketText,
+                    timestamp: new Date().toLocaleTimeString()
+                });
+                dbSet('cp_users', users);
+                printTelemetry(`[FLAG AUDIT RECEIPT] Node [${sessionUser.id}] flagged message from [${authorId}]: "${badPacketText}"`, "error");
+                alert("🚩 Verification receipt processed. Message has been dispatched to parental telemetry boards for review.");
+            }
         }
 
 
@@ -1315,9 +1725,14 @@
                     const friendObj = users[fId];
                     if (!friendObj) return;
                     
+                    const presence = friendObj.status || "🟢 Online";
+                    
                     const div = document.createElement('div');
                     div.className = `friend-thread-item ${activeChatRecipient === fId ? 'active-thread' : ''}`;
-                    div.innerHTML = `🟢 ${friendObj.name} <span style="font-size:10px; opacity:0.6; margin-left:auto;">[${fId}]</span>`;
+                    div.innerHTML = `
+                        <strong>🟢 ${friendObj.name}</strong> 
+                        <span style="font-size:11px; opacity:0.7;">Presence: ${presence}</span>
+                    `;
                     div.onclick = () => selectDmThread(fId);
                     listWrapper.appendChild(div);
                 });
@@ -1351,14 +1766,17 @@
             const chats = dbGet('cp_chats');
             const directStream = chats[key] || [];
             
-            directStream.forEach(m => {
+            directStream.forEach((m, mIdx) => {
                 const item = document.createElement('div');
                 if (m.type === 'sys') {
                     item.className = 'msg sys-alert';
                     item.innerText = m.txt;
                 } else {
                     item.className = m.sender === sessionUser.id ? 'msg outgoing' : 'msg incoming';
-                    item.innerText = m.txt;
+                    item.innerHTML = `
+                        ${m.txt}
+                        <button class="flag-btn" onclick="executeFlagMessage('DIRECT_MSG', '${key}', '${m.sender}', ${mIdx})">🚩 Flag</button>
+                    `;
                 }
                 msgBox.appendChild(item);
             });
@@ -1383,6 +1801,7 @@
                 handleContentInfraction(chats, key, txt);
             } else {
                 chats[key].push({ sender: sessionUser.id, type: 'chat', txt: txt });
+                processUserMessageTracking();
             }
             
             dbSet('cp_chats', chats);
@@ -1397,6 +1816,15 @@
             const users = dbGet('cp_users');
             users[sessionUser.id].strikes += 1;
             
+            // Record validation details on historical telemetry trackers
+            if(!users[sessionUser.id].infractionHistory) users[sessionUser.id].infractionHistory = [];
+            users[sessionUser.id].infractionHistory.push({
+                type: "AUTOMATED_FILTER_INFRACTION",
+                scope: storageKey,
+                payload: flaggedPayload,
+                timestamp: new Date().toLocaleTimeString()
+            });
+
             printTelemetry(`[SECURITY INFRACTION] Dictionary violation triggered by user: ${sessionUser.id}. Packet scrubbed: "${flaggedPayload}"`, "error");
             
             chatsObj[storageKey].push({
@@ -1411,9 +1839,14 @@
                 executeLogout();
             } else {
                 alert(`⚠️ FILTER DETECTED WORD:\nYour message matched words logged in our secure data filter. Strike logged (${users[sessionUser.id].strikes}/3).`);
+                
+                // Clear the safety badge out if they break rule vectors
+                users[sessionUser.id].badges = (users[sessionUser.id].badges || []).filter(b => b !== "🛡️ Safety Hero");
+                
                 dbSet('cp_users', users);
                 sessionUser = users[sessionUser.id];
                 updateSecurityBanners();
+                renderBadges();
             }
         }
 
